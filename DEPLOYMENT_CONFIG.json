@@ -1,0 +1,97 @@
+{
+  "project": {
+    "name": "SEWA Hospitality Website",
+    "version": "1.0.0",
+    "environment": "production"
+  },
+  "deployment": {
+    "platforms": [
+      {
+        "name": "Vercel",
+        "status": "recommended",
+        "setup": {
+          "1_connect_repository": "Import GitHub/GitLab repository",
+          "2_configure_environment": "Add env vars in Vercel dashboard",
+          "3_deploy": "Automatic on push to main",
+          "performance": "Best performance, auto scaling"
+        }
+      },
+      {
+        "name": "Netlify",
+        "status": "compatible",
+        "setup": {
+          "1_connect_repository": "Connect Git repository",
+          "2_build_command": "npm run build",
+          "3_publish_directory": ".next",
+          "4_env_variables": "Add in Netlify UI"
+        }
+      },
+      {
+        "name": "Self-Hosted",
+        "status": "compatible",
+        "setup": {
+          "1_install_nodejs": "Node.js 18+ required",
+          "2_install_dependencies": "npm install",
+          "3_build_project": "npm run build",
+          "4_process_manager": "Use PM2, systemd, or supervisor",
+          "5_reverse_proxy": "nginx or Apache"
+        }
+      }
+    ]
+  },
+  "environment_variables": {
+    "required": [],
+    "optional": {
+      "RESEND_API_KEY": "Email service (Resend)",
+      "NEXT_PUBLIC_SUPABASE_URL": "Database (Supabase)",
+      "SUPABASE_SERVICE_ROLE_KEY": "Database service role",
+      "DATABASE_URL": "Database (Neon/Custom)",
+      "SENDGRID_API_KEY": "Email service (SendGrid)",
+      "NEXTAUTH_SECRET": "Authentication secret"
+    }
+  },
+  "build_configuration": {
+    "node_version": "18.17.0 or higher",
+    "npm_version": "9.0.0 or higher",
+    "build_command": "npm run build",
+    "start_command": "npm run start",
+    "dev_command": "npm run dev",
+    "output_directory": ".next"
+  },
+  "performance": {
+    "lighthouse_targets": {
+      "performance": 90,
+      "accessibility": 95,
+      "best_practices": 95,
+      "seo": 95
+    },
+    "core_web_vitals": {
+      "lcp": "under 2.5s",
+      "fid": "under 100ms",
+      "cls": "under 0.1"
+    }
+  },
+  "monitoring": {
+    "error_tracking": "Sentry (optional)",
+    "analytics": "Google Analytics / Vercel Analytics",
+    "uptime": "Uptime Robot (optional)",
+    "performance": "Vercel Analytics Dashboard"
+  },
+  "security": {
+    "https": "Required",
+    "headers": {
+      "strict_transport_security": "max-age=31536000",
+      "x_content_type_options": "nosniff",
+      "x_frame_options": "DENY",
+      "content_security_policy": "Recommended"
+    },
+    "rate_limiting": "Implement for API endpoints",
+    "reCAPTCHA": "Recommended for forms"
+  },
+  "maintenance": {
+    "update_frequency": "Monthly security updates",
+    "backup_schedule": "Daily database backups",
+    "testing": "Before each deployment",
+    "monitoring": "24/7 uptime monitoring"
+  }
+}

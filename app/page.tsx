@@ -1,0 +1,27 @@
+"use client"
+
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { HeroSection } from "@/components/home/hero-section"
+import { WhoWeServeSection } from "@/components/home/who-we-serve"
+import { ServicesGridSection } from "@/components/home/services-grid"
+import { WhySewaSection } from "@/components/home/why-sewa"
+import { DestinationsScrollSection } from "@/components/home/destinations-scroll"
+import { FinalCtaSection } from "@/components/home/final-cta"
+
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <main>
+        <HeroSection />
+        <WhoWeServeSection />
+        <ServicesGridSection />
+        <WhySewaSection />
+        <DestinationsScrollSection />
+        <FinalCtaSection />
+      </main>
+      <Footer />
+    </>
+  )
+}
