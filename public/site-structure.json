@@ -1,0 +1,262 @@
+{
+  "projectName": "SEWA Hospitality Services Pvt. Ltd.",
+  "tagline": "Luxury Concierge • Travel • Relocation • Property Management",
+  "baseUrl": "https://sewa-hospitality.com",
+  "color_scheme": {
+    "primary": "#1a4d2e",
+    "secondary": "#b8860b",
+    "background": "#f8f6f1",
+    "foreground": "#1a1a1a",
+    "accent": "#d4a574"
+  },
+  "typography": {
+    "headings": "Playfair Display (serif)",
+    "body": "Inter or Lato (sans-serif)",
+    "monospace": "Geist Mono"
+  },
+  "pages": {
+    "home": {
+      "path": "/",
+      "title": "SEWA Hospitality - Luxury Concierge & Services",
+      "description": "Bespoke hospitality and lifestyle services for global elites",
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "heading": "Bespoke Hospitality & Lifestyle Services for Global Elites in India",
+          "subheading": "Luxury Travel • Concierge • Residences • Relocation",
+          "ctas": ["Request Personal Concierge", "Speak to SEWA Advisor"]
+        },
+        {
+          "id": "who-we-serve",
+          "type": "4-card-grid",
+          "heading": "Who We Serve",
+          "cards": [
+            { "title": "International Travelers", "description": "Seamless luxury experiences worldwide" },
+            { "title": "Expatriates & Executives", "description": "Dedicated relocation and lifestyle support" },
+            { "title": "HNIs & Business Families", "description": "Personalized wealth & property management" },
+            { "title": "Corporate & Diplomatic Clients", "description": "Comprehensive executive services" }
+          ]
+        },
+        {
+          "id": "services",
+          "type": "6-card-grid",
+          "heading": "Signature Services",
+          "cards": [
+            { "title": "Luxury Travel & Mobility", "link": "/services#travel" },
+            { "title": "VIP Concierge Services", "link": "/services#concierge" },
+            { "title": "Serviced Luxury Residences", "link": "/services#residences" },
+            { "title": "Relocation & Settling-In", "link": "/services#relocation" },
+            { "title": "Immigration & Visa Support", "link": "/services#immigration" },
+            { "title": "Curated Experiences & Events", "link": "/services#experiences" }
+          ]
+        },
+        {
+          "id": "why-sewa",
+          "type": "4-feature",
+          "heading": "Why Choose SEWA",
+          "features": [
+            { "title": "Multilingual Concierge", "description": "Fluent in JP, KR, EU languages" },
+            { "title": "Single-Window Solutions", "description": "All luxury needs in one partnership" },
+            { "title": "India-wide Network", "description": "Premium services across all major cities" },
+            { "title": "24×7 Relationship Manager", "description": "Dedicated personal attention always" }
+          ]
+        },
+        {
+          "id": "destinations",
+          "type": "horizontal-scroll",
+          "heading": "Destinations We Curate",
+          "items": [
+            { "name": "Delhi NCR", "slug": "delhi-ncr" },
+            { "name": "Mumbai", "slug": "mumbai" },
+            { "name": "Goa", "slug": "goa" },
+            { "name": "Jaipur", "slug": "jaipur" },
+            { "name": "Varanasi", "slug": "varanasi" },
+            { "name": "Rishikesh", "slug": "rishikesh" },
+            { "name": "South India", "slug": "south-india" }
+          ]
+        },
+        {
+          "id": "cta-final",
+          "type": "centered-cta",
+          "heading": "Your India, Seamlessly Managed.",
+          "cta": "Begin Your SEWA Journey"
+        }
+      ]
+    },
+    "about": {
+      "path": "/about",
+      "title": "About SEWA Hospitality",
+      "description": "Brand story, vision, philosophy, and leadership",
+      "sections": [
+        { "id": "brand-story", "type": "text-image", "heading": "Our Story" },
+        {
+          "id": "vision",
+          "type": "3-card",
+          "heading": "Vision & Philosophy",
+          "cards": ["Discretion", "Personalization", "Cultural Intelligence"]
+        },
+        { "id": "leadership", "type": "team-grid", "heading": "Our Team" }
+      ]
+    },
+    "services": {
+      "path": "/services",
+      "title": "SEWA Services",
+      "description": "Complete range of luxury hospitality services",
+      "sections": [
+        {
+          "id": "luxury-travel",
+          "heading": "Luxury Travel & Mobility",
+          "items": [
+            "First/Business Class bookings",
+            "Luxury hotels & resorts",
+            "Chauffeur-driven cars",
+            "Airport VIP services"
+          ]
+        },
+        {
+          "id": "concierge",
+          "heading": "Concierge & Lifestyle",
+          "items": ["Personal concierge", "Dining & reservations", "Shopping assistance", "Private chefs & wellness"]
+        },
+        {
+          "id": "residences",
+          "heading": "Premium Residences",
+          "items": ["Luxury serviced apartments", "Full housekeeping", "Chef/Butler on request", "Security & privacy"]
+        },
+        {
+          "id": "relocation",
+          "heading": "Relocation & Immigration",
+          "items": ["Visa & FRRO", "Cultural orientation", "School admissions", "Settling-in support"]
+        },
+        {
+          "id": "experiences",
+          "heading": "Events & Experiences",
+          "items": ["Private cultural tours", "Invite-only experiences", "Corporate & CSR events"]
+        }
+      ]
+    },
+    "corporate": {
+      "path": "/corporate",
+      "title": "Corporate & Expat Solutions",
+      "description": "Executive relocation and corporate services",
+      "sections": [
+        { "id": "executive-relocation", "heading": "Executive Relocation" },
+        { "id": "corporate-housing", "heading": "Corporate Housing" },
+        { "id": "long-stay", "heading": "Long-Stay Solutions" },
+        { "id": "fleet-services", "heading": "Fleet & Chauffeur Services" },
+        { "id": "immigration-compliance", "heading": "Immigration Compliance" }
+      ]
+    },
+    "destinations": {
+      "path": "/destinations",
+      "title": "Destinations",
+      "description": "Luxury experiences across India",
+      "items": [
+        {
+          "name": "Delhi NCR",
+          "slug": "delhi-ncr",
+          "services": ["Business facilities", "Urban luxury", "Cultural experiences"]
+        },
+        { "name": "Mumbai", "slug": "mumbai", "services": ["Coastal villas", "Fine dining", "Entertainment"] },
+        { "name": "Goa", "slug": "goa", "services": ["Villas", "Wellness", "Private yachts"] },
+        {
+          "name": "Jaipur",
+          "slug": "jaipur",
+          "services": ["Heritage tours", "Royal experiences", "Cultural immersion"]
+        },
+        {
+          "name": "Varanasi",
+          "slug": "varanasi",
+          "services": ["Spiritual concierge", "Private ghat access", "Cultural tours"]
+        },
+        {
+          "name": "Rishikesh",
+          "slug": "rishikesh",
+          "services": ["Wellness retreats", "Yoga & meditation", "Adventure activities"]
+        },
+        {
+          "name": "South India",
+          "slug": "south-india",
+          "services": ["Backwater cruises", "Spice route tours", "Temple experiences"]
+        }
+      ]
+    },
+    "partners": {
+      "path": "/partners",
+      "title": "Partners & Affiliations",
+      "description": "Authorized partners and affiliations",
+      "sections": [
+        { "id": "hotel-partners", "heading": "Hotel & Resort Partners" },
+        { "id": "transport-partners", "heading": "Luxury Transport Partners" },
+        { "id": "property-partners", "heading": "Interior & Property Partners" },
+        { "id": "legal-partners", "heading": "Immigration & Legal Associates" }
+      ]
+    },
+    "contact": {
+      "path": "/contact",
+      "title": "Contact & Concierge Desk",
+      "description": "Get in touch with SEWA Hospitality",
+      "sections": [
+        {
+          "id": "concierge-form",
+          "type": "form",
+          "fields": ["name", "nationality", "service_interest", "preferred_language", "message"]
+        },
+        {
+          "id": "contact-info",
+          "type": "contact-details",
+          "address": "Gurgaon, India",
+          "email": "concierge@sewa-hospitality.com",
+          "phone": "+91 XXXX-XXXX-XXXX",
+          "whatsapp": "+91 XXXX-XXXX-XXXX"
+        }
+      ]
+    }
+  },
+  "navigation": {
+    "primary": [
+      { "label": "Home", "path": "/" },
+      { "label": "About SEWA", "path": "/about" },
+      { "label": "Services", "path": "/services" },
+      { "label": "Corporate & Expat Solutions", "path": "/corporate" },
+      { "label": "Destinations", "path": "/destinations" },
+      { "label": "Partners", "path": "/partners" },
+      { "label": "Contact", "path": "/contact" }
+    ],
+    "footer": [
+      { "label": "Privacy Policy", "path": "/privacy" },
+      { "label": "Terms of Service", "path": "/terms" },
+      { "label": "Careers", "path": "/careers" },
+      { "label": "Language Selector", "component": "LanguageSelector" }
+    ]
+  },
+  "features": {
+    "multi_language": {
+      "enabled": true,
+      "languages": ["en", "hi", "ja", "ko", "fr", "de", "es", "ru", "zh", "tr"],
+      "default": "en"
+    },
+    "responsive_design": {
+      "mobile_first": true,
+      "breakpoints": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px"
+      }
+    },
+    "forms": {
+      "email_integration": true,
+      "providers": ["SendGrid", "Resend", "Nodemailer"],
+      "forms": ["concierge_request", "inquiry", "corporate_inquiry"]
+    }
+  },
+  "brand_identity": {
+    "company_name": "SEWA Hospitality Services Pvt. Ltd.",
+    "location": "Gurgaon, India",
+    "vision": "To provide bespoke, luxury hospitality and lifestyle services to global elites with unparalleled discretion and cultural intelligence",
+    "mission": "Seamlessly connect discerning travelers and expatriates with India's finest experiences",
+    "values": ["Discretion", "Personalization", "Cultural Intelligence", "Excellence", "Integrity"]
+  }
+}
