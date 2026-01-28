@@ -11,7 +11,7 @@ The contact form is fully functional and ready for email service integration. Cu
 3. Add to `.env.local`: `RESEND_API_KEY=your_api_key`
 4. Update `/app/api/contact/route.ts`:
 
-```typescript
+\`\`\`typescript
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -39,7 +39,7 @@ async function sendEmail(data: ContactFormData) {
     return { success: false };
   }
 }
-```
+\`\`\`
 
 ### Option 2: SendGrid
 1. Get API key from [https://sendgrid.com](https://sendgrid.com)
@@ -56,7 +56,7 @@ async function sendEmail(data: ContactFormData) {
 To store form submissions:
 
 ### With Supabase:
-```typescript
+\`\`\`typescript
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
@@ -64,15 +64,15 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env
 const { error } = await supabase
   .from('concierge_requests')
   .insert([data]);
-```
+\`\`\`
 
 ### With Neon/PostgreSQL:
-```typescript
+\`\`\`typescript
 import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
 await sql`INSERT INTO concierge_requests (name, email, ...) VALUES (...)`;
-```
+\`\`\`
 
 ## Form Fields
 - **Name**: Required

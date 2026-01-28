@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
+import { trackLeadSubmission } from "@/components/seo/google-ads-tracking"
 
 interface ConciergeFormProps {
   title?: string
@@ -33,6 +34,7 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     nationality: "",
     serviceInterest: "",
     preferredLanguage: language,
@@ -65,10 +67,13 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
         throw new Error("Failed to send message")
       }
 
+      trackLeadSubmission("concierge_form", formData.serviceInterest)
+
       setSubmitted(true)
       setFormData({
         name: "",
         email: "",
+        phone: "",
         nationality: "",
         serviceInterest: "",
         preferredLanguage: language,
@@ -126,6 +131,18 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="your@email.com"
             required
+            className="bg-background border-border"
+          />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Phone Number</label>
+          <Input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+1 234 567 8900"
             className="bg-background border-border"
           />
         </div>
