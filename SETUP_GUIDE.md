@@ -15,31 +15,31 @@ This is a luxury hospitality website built with Next.js 16, featuring:
 
 Add these to your Vercel project environment variables:
 
-```
+\`\`\`
 RESEND_API_KEY=your_resend_api_key
-```
+\`\`\`
 
 ### 2. Optional Database Integration
 
 For future backend features:
 
 **Supabase:**
-```
+\`\`\`
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-```
+\`\`\`
 
 **Neon:**
-```
+\`\`\`
 DATABASE_URL=your_neon_database_url
-```
+\`\`\`
 
 ## Architecture Overview
 
 ### File Structure
 
-```
+\`\`\`
 app/
 ├── layout.tsx                 # Root layout with Providers wrapper
 ├── page.tsx                   # Homepage (Client Component)
@@ -74,7 +74,7 @@ public/
 ├── site-structure.json       # Complete site architecture in JSON format
 └── [images]                  # Image assets
 
-```
+\`\`\`
 
 ### Key Components
 
@@ -109,13 +109,13 @@ public/
 
 ### Testing Email in Development
 
-```bash
+\`\`\`bash
 # Install dependencies
 npm install resend
 
 # Emails sent to RESEND_TEST_FROM_EMAIL during development
 RESEND_TEST_FROM_EMAIL=test@example.com
-```
+\`\`\`
 
 ## Multi-Language Implementation
 
@@ -134,7 +134,7 @@ RESEND_TEST_FROM_EMAIL=test@example.com
 
 ### Using Translations
 
-```tsx
+\`\`\`tsx
 import { useLanguage } from "@/lib/language-context"
 
 export function MyComponent() {
@@ -142,7 +142,7 @@ export function MyComponent() {
   
   return <h1>{t("nav.home")}</h1>  // Displays in current language
 }
-```
+\`\`\`
 
 ### Adding New Translations
 
@@ -154,13 +154,13 @@ export function MyComponent() {
 
 ### Vercel Deployment
 
-```bash
+\`\`\`bash
 # Push to GitHub (or connect repo)
 git push origin main
 
 # Vercel auto-deploys on push
 # Add environment variables in Vercel Dashboard > Settings > Environment Variables
-```
+\`\`\`
 
 ### Environment Variables Needed on Vercel
 
@@ -181,13 +181,13 @@ git push origin main
 
 ## Form Submission Flow
 
-```
+\`\`\`
 User fills form → Client validation → API POST to /api/contact
    ↓
 Server validation → Resend email send to concierge + confirmation to user
    ↓
 Success message displayed → Form resets after 5 seconds
-```
+\`\`\`
 
 ## Responsive Breakpoints
 
@@ -202,10 +202,10 @@ All pages are mobile-first responsive using Tailwind CSS.
 ### "useLanguage must be used within LanguageProvider" Error
 
 **Solution:** Ensure page has `"use client"` directive at top:
-```tsx
+\`\`\`tsx
 "use client"
 import { useLanguage } from "@/lib/language-context"
-```
+\`\`\`
 
 ### Emails not sending
 

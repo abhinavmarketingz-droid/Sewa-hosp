@@ -39,7 +39,7 @@ SEWA Hospitality Services is a boutique concierge and luxury lifestyle company s
 
 ## Project Structure
 
-```
+\`\`\`
 ├── app/
 │   ├── layout.tsx              # Root layout with i18n provider
 │   ├── globals.css             # Luxury color system & typography
@@ -75,7 +75,7 @@ SEWA Hospitality Services is a boutique concierge and luxury lifestyle company s
 │   ├── site-structure.json     # Site architecture document
 │   └── images/                 # Hero & destination images
 └── README.md                   # This file
-```
+\`\`\`
 
 ## Features
 
@@ -130,37 +130,37 @@ Fully implemented i18n with 10 languages:
 ### Local Development
 
 1. Clone the repository:
-```bash
+\`\`\`bash
 git clone <repository-url>
 cd sewa-hospitality
-```
+\`\`\`
 
 2. Install dependencies:
-```bash
+\`\`\`bash
 npm install
 # or
 pnpm install
-```
+\`\`\`
 
 3. Set up environment variables (optional for email):
-```bash
+\`\`\`bash
 # Create .env.local
 NEXT_PUBLIC_SUPABASE_URL=your_url      # Optional
 RESEND_API_KEY=your_key                # Optional
-```
+\`\`\`
 
 4. Run development server:
-```bash
+\`\`\`bash
 npm run dev
-```
+\`\`\`
 
 5. Open [http://localhost:3000](http://localhost:3000)
 
 ### Build for Production
-```bash
+\`\`\`bash
 npm run build
 npm start
-```
+\`\`\`
 
 ## Configuration
 
@@ -214,11 +214,11 @@ Follow `IMPLEMENTATION_GUIDE.md` for:
 ## Deployment
 
 ### Vercel (Recommended)
-```bash
+\`\`\`bash
 npm install -g vercel
 vercel login
 vercel deploy
-```
+\`\`\`
 
 ### Other Platforms
 - **Netlify**: `npm run build` then connect Git
@@ -231,7 +231,7 @@ vercel deploy
 **Submit a concierge request**
 
 Request body:
-```json
+\`\`\`json
 {
   "name": "John Doe",
   "email": "john@example.com",
@@ -240,15 +240,15 @@ Request body:
   "preferredLanguage": "en",
   "message": "I would like to book..."
 }
-```
+\`\`\`
 
 Response:
-```json
+\`\`\`json
 {
   "success": true,
   "message": "Your request has been received..."
 }
-```
+\`\`\`
 
 ## Customization Guide
 
@@ -271,22 +271,22 @@ Response:
 ## Database Integration
 
 ### Supabase
-```typescript
+\`\`\`typescript
 import { createServerClient } from '@supabase/ssr';
 
 const supabase = createServerClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
-```
+\`\`\`
 
 ### Neon
-```typescript
+\`\`\`typescript
 import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
 await sql`INSERT INTO concierge_requests (name, email) VALUES ($1, $2)`;
-```
+\`\`\`
 
 ## Troubleshooting
 

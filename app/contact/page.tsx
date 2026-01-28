@@ -1,21 +1,46 @@
-"use client"
-
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ConciergeForm } from "@/components/contact/concierge-form"
 import { Card } from "@/components/ui/card"
-import { Mail, Phone, MapPin, MessageCircle } from "lucide-react"
+import Image from "next/image"
+import { Mail, Phone, MapPin, MessageCircle, Clock } from "lucide-react"
+import { getPageMeta } from "@/lib/data/pages"
+import { getSetting } from "@/lib/data/site-settings"
 
-export default function ContactPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const pageMeta = await getPageMeta("contact")
+
+  return {
+    title: pageMeta?.title || "Contact Us - SEWA Hospitality",
+    description: pageMeta?.description || "Connect with our concierge desk and let us craft your perfect experience",
+    keywords: pageMeta?.meta_keywords || ["contact sewa", "concierge India", "luxury service inquiry"],
+    openGraph: {
+      title: pageMeta?.title || "Contact Us - SEWA Hospitality",
+      description: pageMeta?.description || "Connect with our concierge desk and let us craft your perfect experience",
+      images: pageMeta?.og_image ? [pageMeta.og_image] : [],
+    },
+  }
+}
+
+export default async function ContactPage() {
+  const contactInfo = (await getSetting("contact_info")) as Record<string, string> | null
+
   return (
     <>
       <Header />
       <main>
         {/* Hero */}
-        <section className="py-16 md:py-24 bg-gradient-to-br from-primary/10 to-secondary/5 border-b border-border">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">Contact SEWA Hospitality</h1>
-            <p className="text-lg text-muted-foreground">
+        <section className="relative py-20 md:py-28 overflow-hidden">
+          <div className="absolute inset-0">
+            <Image src="/luxury-hotel-reception-concierge.jpg" alt="Contact SEWA" fill className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
+          </div>
+          <div className="relative container mx-auto px-4 max-w-4xl">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6 text-white">
+              Contact SEWA Hospitality
+            </h1>
+            <p className="text-lg md:text-xl text-white/80">
               Connect with our concierge desk and let us craft your perfect experience
             </p>
           </div>
@@ -45,10 +70,10 @@ export default function ContactPage() {
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Email</p>
                         <a
-                          href="mailto:concierge@sewa-hospitality.com"
+                          href={`mailto:${contactInfo?.email || "concierge@sewa-hospitality.com"}`}
                           className="text-foreground hover:text-primary transition-colors font-medium"
                         >
-                          concierge@sewa-hospitality.com
+                          {contactInfo?.email || "concierge@sewa-hospitality.com"}
                         </a>
                       </div>
                     </div>
@@ -59,10 +84,10 @@ export default function ContactPage() {
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Phone</p>
                         <a
-                          href="tel:+911234567890"
+                          href={`tel:${contactInfo?.phone || "+911234567890"}`}
                           className="text-foreground hover:text-primary transition-colors font-medium"
                         >
-                          +91 XXXX-XXXX-XXXX
+                          {contactInfo?.phone || "+91 XXXX-XXXX-XXXX"}
                         </a>
                       </div>
                     </div>
@@ -73,10 +98,10 @@ export default function ContactPage() {
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">WhatsApp</p>
                         <a
-                          href="https://wa.me/911234567890"
+                          href={`https://wa.me/${contactInfo?.whatsapp || "911234567890"}`}
                           className="text-foreground hover:text-primary transition-colors font-medium"
                         >
-                          +91 XXXX-XXXX-XXXX
+                          {contactInfo?.whatsapp || "+91 XXXX-XXXX-XXXX"}
                         </a>
                       </div>
                     </div>
@@ -86,7 +111,9 @@ export default function ContactPage() {
                       <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Office</p>
-                        <p className="text-foreground font-medium text-sm">Gurgaon, India</p>
+                        <p className="text-foreground font-medium text-sm">
+                          {contactInfo?.address || "Gurgaon, India"}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -94,7 +121,10 @@ export default function ContactPage() {
 
                 {/* Hours */}
                 <Card className="p-6 border-border">
-                  <h3 className="font-serif font-bold text-lg mb-4">Hours of Operation</h3>
+                  <h3 className="font-serif font-bold text-lg mb-4 flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" />
+                    Hours of Operation
+                  </h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Monday - Friday</span>
@@ -124,13 +154,16 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Map Placeholder Section */}
+        {/* Map Section */}
         <section className="py-12 md:py-16 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-4">
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center border border-border">
-              <div className="text-center">
-                <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground text-sm">Location map coming soon</p>
+            <div className="relative aspect-video rounded-lg overflow-hidden border border-border">
+              <Image src="/map-gurgaon-india-location.jpg" alt="SEWA Location" fill className="object-cover" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                <div className="text-center text-white">
+                  <MapPin className="h-12 w-12 mx-auto mb-2" />
+                  <p className="font-serif font-bold">Gurgaon, India</p>
+                </div>
               </div>
             </div>
           </div>

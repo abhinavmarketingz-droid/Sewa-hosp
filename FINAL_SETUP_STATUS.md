@@ -57,10 +57,10 @@ In your Vercel project:
 3. Save
 
 ### Step 2: Deploy
-```bash
+\`\`\`bash
 git push origin main
 # Vercel auto-deploys on push
-```
+\`\`\`
 
 ### Step 3: Test
 - Visit your deployed site
@@ -73,10 +73,10 @@ git push origin main
 ## Error You Saw - NOW FIXED
 
 **Original Error:**
-```
+\`\`\`
 useLanguage must be used within LanguageProvider
 at Header (/components/header)
-```
+\`\`\`
 
 **Fix Applied:**
 - Added `"use client"` directive to `app/page.tsx`
@@ -118,7 +118,7 @@ at Header (/components/header)
 
 ## File Structure
 
-```
+\`\`\`
 ✓ app/
   ✓ layout.tsx (Root layout)
   ✓ page.tsx (Homepage - "use client" added)
@@ -151,14 +151,14 @@ at Header (/components/header)
   ✓ site-structure.json (API documentation)
   ✓ VERIFICATION_CHECKLIST.md (QA checklist)
   ✓ FINAL_SETUP_STATUS.md (This file)
-```
+\`\`\`
 
 ---
 
 ## What's Ready for Backend Integration
 
 ### Supabase Setup
-```typescript
+\`\`\`typescript
 // Future: Store form submissions
 const { data } = await supabase
   .from('concierge_requests')
@@ -168,15 +168,15 @@ const { data } = await supabase
 const { user } = await supabase.auth.signUp({
   email, password
 })
-```
+\`\`\`
 
 ### Neon Setup
-```typescript
+\`\`\`typescript
 // Future: Query customer data
 const result = await sql`
   SELECT * FROM clients WHERE status = $1
 `
-```
+\`\`\`
 
 ---
 

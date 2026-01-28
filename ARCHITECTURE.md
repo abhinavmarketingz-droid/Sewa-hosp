@@ -2,7 +2,7 @@
 
 ## System Overview
 
-```
+\`\`\`
 ┌─────────────────────────────────────────────────────────┐
 │                    Client Browser                        │
 │  ┌───────────────────────────────────────────────────┐  │
@@ -46,12 +46,12 @@
 │  │ - Custom database                               │   │
 │  └──────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
-```
+\`\`\`
 
 ## Data Flow
 
 ### Form Submission Flow
-```
+\`\`\`
 User Input → Form Component (React)
     ↓ (Validation with Zod)
 Valid Data → API Route Handler
@@ -61,10 +61,10 @@ Clean Data → Email Service
 Success → Database (optional)
     ↓ (Log submission)
 Response → Client (Toast notification)
-```
+\`\`\`
 
 ### Language Selection Flow
-```
+\`\`\`
 Language Dropdown → useLanguage Hook
     ↓ (Update context)
 Context Update → Re-render Components
@@ -72,11 +72,11 @@ Context Update → Re-render Components
 New Language → localStorage
     ↓ (Persist preference)
 Page Reload → Read from localStorage
-```
+\`\`\`
 
 ## Component Hierarchy
 
-```
+\`\`\`
 Layout
 ├── Header
 │   ├── Logo/Brand
@@ -94,7 +94,7 @@ Layout
     ├── Links
     ├── Contact Info
     └── Copyright
-```
+\`\`\`
 
 ## File Organization by Layer
 
@@ -144,7 +144,7 @@ Layout
 ## Responsive Design Strategy
 
 ### Breakpoints
-```
+\`\`\`
 Mobile (< 640px)
   - Single column layouts
   - Hamburger menu
@@ -159,7 +159,7 @@ Desktop (> 1024px)
   - 3-4 column grids
   - Full navigation
   - Maximum width container
-```
+\`\`\`
 
 ### Mobile-First CSS
 All styles start mobile and enhance with `md:`, `lg:`, `xl:` prefixes.
@@ -167,14 +167,14 @@ All styles start mobile and enhance with `md:`, `lg:`, `xl:` prefixes.
 ## Styling System
 
 ### Design Tokens (CSS Variables)
-```css
+\`\`\`css
 --primary: Forest Green (#1a4d2e)
 --secondary: Warm Gold (#b8860b)
 --background: Ivory (#f8f6f1)
 --foreground: Charcoal (#1a1a1a)
 --border: Light Gray (#f0ebe4)
 --muted: Very Light Gray (#f5f1eb)
-```
+\`\`\`
 
 ### Typography
 - **Headings**: Playfair Display (serif)
@@ -244,10 +244,10 @@ All styles start mobile and enhance with `md:`, `lg:`, `xl:` prefixes.
 - Static export for deployment
 
 ### Bundle Analysis
-```bash
+\`\`\`bash
 npm run build
 npm run analyze  # (if configured)
-```
+\`\`\`
 
 ## Deployment Checklist
 
