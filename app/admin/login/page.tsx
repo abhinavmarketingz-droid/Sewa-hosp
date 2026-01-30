@@ -103,6 +103,13 @@ export default function AdminLoginPage() {
             )}
           </Button>
         </form>
+
+        <p className="text-center text-sm text-muted-foreground mt-6">
+          Don't have an account?{" "}
+          <a href="/admin/register" className="text-primary hover:underline font-medium">
+            Create one
+          </a>
+        </p>
       </Card>
     </div>
   )
