@@ -31,7 +31,11 @@ export async function updateSession(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/admin")) {
     const adminToken = request.cookies.get("admin_session")?.value
 
-    if (!adminToken && !request.nextUrl.pathname.startsWith("/admin/login")) {
+    // Allow login and register pages without authentication
+    const publicAdminPages = ["/admin/login", "/admin/register"]
+    const isPublicPage = publicAdminPages.some((page) => request.nextUrl.pathname.startsWith(page))
+
+    if (!adminToken && !isPublicPage) {
       const url = request.nextUrl.clone()
       url.pathname = "/admin/login"
       return NextResponse.redirect(url)
