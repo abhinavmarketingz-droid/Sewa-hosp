@@ -23,6 +23,8 @@ export default function AdminLoginPage() {
     setError("")
 
     try {
+      console.log("[v0] Attempting login with email:", credentials.email)
+      
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -30,15 +32,19 @@ export default function AdminLoginPage() {
       })
 
       const data = await response.json()
+      console.log("[v0] Login response:", { status: response.status, data })
 
       if (!response.ok) {
         throw new Error(data.error || "Login failed")
       }
 
+      console.log("[v0] Login successful, redirecting to admin")
       router.push("/admin")
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed")
+      const errorMsg = err instanceof Error ? err.message : "Login failed"
+      console.error("[v0] Login error:", errorMsg)
+      setError(errorMsg)
     } finally {
       setLoading(false)
     }
