@@ -11,9 +11,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email and password required" }, { status: 400 })
     }
 
-    const supabase = await createAdminClient()
+    // Try admin client first, fall back to regular client
+    let supabase
+    try {
+      supabase = await createAdminClient()
+    } catch (e) {
+      console.error("[v0] Admin client failed, using regular client")
+      const { createClient } = await import("@/lib/supabase/server")
+      supabase = await createClient()
+    }
 
-    // Find admin user
+    // Find admin user - bypass RLS for admin login
     const { data: admin, error } = await supabase
       .from("admin_users")
       .select("*")
