@@ -341,4 +341,4 @@ Proprietary - SEWA Hospitality Services Pvt. Ltd.
 
 ---
 
-**Built with v0 by Vercel** - AI-powered UI generation platform
+**Built with AKM** - AI-powered UI generation platform
