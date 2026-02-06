@@ -2,7 +2,8 @@ import "server-only"
 
 import { createClient } from "@supabase/supabase-js"
 
-const getSupabaseUrl = () => process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+const getSupabaseUrl = () =>
+  process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
 
 export const getSupabaseAdminClient = () => {
   const supabaseUrl = getSupabaseUrl()
