@@ -63,10 +63,12 @@ export default async function AdminPage() {
     supabase.from("content_destinations").select("*").order("position", { ascending: true }),
   ])
 
+  const servicesData = servicesResponse.data?.map((item) => ({
+    ...item,
+    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
+  }))
   const services =
-    servicesResponse.error || !servicesResponse.data?.length
-      ? defaultServices
-      : (servicesResponse.data as ServiceContent[])
+    servicesResponse.error || !servicesData?.length ? defaultServices : (servicesData as ServiceContent[])
   const destinationsData = destinationsResponse.data?.map((item) => ({
     ...item,
     imageUrl: (item as { image_url?: string | null }).image_url ?? null,

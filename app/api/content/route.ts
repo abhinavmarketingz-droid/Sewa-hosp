@@ -24,7 +24,10 @@ export async function GET() {
     return NextResponse.json({ services: defaultServices, destinations: defaultDestinations })
   }
 
-  const services = servicesResponse.data ?? defaultServices
+  const services = (servicesResponse.data ?? defaultServices).map((item) => ({
+    ...item,
+    titleKey: (item as { title_key?: string | null; titleKey?: string }).title_key ?? item.titleKey,
+  }))
   const destinations = mapDestinations(destinationsResponse.data ?? null)
 
   return NextResponse.json({

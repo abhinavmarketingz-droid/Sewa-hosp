@@ -29,6 +29,7 @@ export function AdminContentManager({ initialServices, initialDestinations }: Ad
     id: "",
     slug: "",
     title: "",
+    titleKey: "",
     description: "",
     items: "",
     position: "",
@@ -50,6 +51,7 @@ export function AdminContentManager({ initialServices, initialDestinations }: Ad
     () => ({
       slug: serviceForm.slug.trim(),
       title: serviceForm.title.trim(),
+      titleKey: serviceForm.titleKey.trim(),
       description: serviceForm.description.trim(),
       items: parseLines(serviceForm.items),
       position: serviceForm.position ? Number(serviceForm.position) : null,
@@ -72,7 +74,7 @@ export function AdminContentManager({ initialServices, initialDestinations }: Ad
   )
 
   const resetServiceForm = () =>
-    setServiceForm({ id: "", slug: "", title: "", description: "", items: "", position: "" })
+    setServiceForm({ id: "", slug: "", title: "", titleKey: "", description: "", items: "", position: "" })
 
   const resetDestinationForm = () =>
     setDestinationForm({
@@ -162,6 +164,7 @@ export function AdminContentManager({ initialServices, initialDestinations }: Ad
       id: service.id,
       slug: service.slug,
       title: service.title,
+      titleKey: service.titleKey ?? "",
       description: service.description,
       items: serializeLines(service.items),
       position: "",
@@ -207,6 +210,11 @@ export function AdminContentManager({ initialServices, initialDestinations }: Ad
                 placeholder="Title"
                 value={serviceForm.title}
                 onChange={(event) => setServiceForm((prev) => ({ ...prev, title: event.target.value }))}
+              />
+              <Input
+                placeholder="Title translation key (optional)"
+                value={serviceForm.titleKey}
+                onChange={(event) => setServiceForm((prev) => ({ ...prev, titleKey: event.target.value }))}
               />
               <Input
                 placeholder="Position (optional)"
