@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase-auth"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { hasPermission, type Permission, type Role } from "@/lib/rbac"
+import { evaluateLicense } from "@/lib/license"
 
 type AdminContext = {
   userId: string
@@ -59,6 +60,13 @@ export const requirePermission = async (permission: Permission) => {
 
   if (!hasPermission(context.role, permission)) {
     return { ok: false as const, error: "Forbidden" }
+  }
+
+  if (process.env.LICENSE_ENFORCE === "true") {
+    const license = evaluateLicense()
+    if (!license.valid) {
+      return { ok: false as const, error: license.reason ?? "License invalid" }
+    }
   }
 
   return { ok: true as const, context }

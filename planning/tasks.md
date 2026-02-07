@@ -4,7 +4,7 @@ This file binds all context documents into **actionable tasks**. Each task refer
 
 ## Task Index
 
-### 1) Extension Architecture Foundation
+### 1) Extension Architecture Foundation ✅
 - **Goal**: Create a modular extension system.
 - **Context**: `planning/context-technical.md` (Extensibility Model), `planning/context-product.md` (Customization Requirements)
 - **Deliverables**:
@@ -12,7 +12,7 @@ This file binds all context documents into **actionable tasks**. Each task refer
   - Extension loading registry
   - Feature flags for extensions
 
-### 2) Secure Licensing & Entitlements
+### 2) Secure Licensing & Entitlements ✅
 - **Goal**: Implement immutable, server-validated licensing.
 - **Context**: `planning/context-security.md` (Licensing)
 - **Deliverables**:

@@ -16,6 +16,7 @@ export type LicenseStatus = {
 
 const resolvePublicKey = () => process.env.LICENSE_PUBLIC_KEY ?? ""
 const resolveLicenseKey = () => process.env.LICENSE_KEY ?? ""
+const resolvePrivateKey = () => process.env.LICENSE_PRIVATE_KEY ?? ""
 
 const decodeBase64Url = (value: string) => {
   const padded = value.replace(/-/g, "+").replace(/_/g, "/")
@@ -83,4 +84,31 @@ export const evaluateLicense = (): LicenseStatus => {
   }
 
   return { valid: true, payload }
+}
+
+export const issueLicense = (payload: LicensePayload) => {
+  const privateKey = resolvePrivateKey()
+  if (!privateKey) {
+    throw new Error("License private key is not configured.")
+  }
+
+  const normalizedPayload: LicensePayload = {
+    tenantId: payload.tenantId,
+    plan: payload.plan,
+    features: payload.features ?? [],
+    issuedAt: payload.issuedAt,
+    expiresAt: payload.expiresAt,
+  }
+
+  const payloadBuffer = Buffer.from(JSON.stringify(normalizedPayload))
+  const signature = crypto.sign(null, payloadBuffer, privateKey)
+
+  const toBase64Url = (value: Buffer) =>
+    value
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "")
+
+  return `${toBase64Url(payloadBuffer)}.${toBase64Url(signature)}`
 }
