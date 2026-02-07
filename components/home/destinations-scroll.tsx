@@ -3,18 +3,11 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-
-const destinations = [
-  { name: "Delhi NCR", slug: "delhi-ncr", image: "landmark-business-modern" },
-  { name: "Mumbai", slug: "mumbai", image: "coastal-modern-cityscape" },
-  { name: "Goa", slug: "goa", image: "tropical-beach-resort" },
-  { name: "Jaipur", slug: "jaipur", image: "palace-royal-architecture" },
-  { name: "Varanasi", slug: "varanasi", image: "spiritual-ancient-temple" },
-  { name: "Rishikesh", slug: "rishikesh", image: "wellness-yoga-retreat" },
-  { name: "South India", slug: "south-india", image: "backwater-tropical-cruise" },
-]
+import { useContent } from "@/hooks/use-content"
 
 export function DestinationsScrollSection() {
+  const { destinations } = useContent()
+
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -22,13 +15,13 @@ export function DestinationsScrollSection() {
 
         <div className="overflow-x-auto pb-4 -mx-4 px-4">
           <div className="flex gap-6 min-w-min">
-            {destinations.map((dest, idx) => (
-              <Link key={idx} href={`/destinations#${dest.slug}`}>
+            {destinations.map((dest) => (
+              <Link key={dest.id} href={`/destinations#${dest.slug}`}>
                 <Card className="w-64 h-80 overflow-hidden border-border hover:border-primary/50 transition-all hover:shadow-lg group cursor-pointer">
                   <div
                     className="w-full h-48 bg-cover bg-center group-hover:scale-105 transition-transform duration-300"
                     style={{
-                      backgroundImage: `url('/--dest-image-.jpg')`,
+                      backgroundImage: `url('${dest.imageUrl ?? "/--dest-image-.jpg"}')`,
                     }}
                   />
                   <div className="p-6 flex flex-col justify-between h-32">

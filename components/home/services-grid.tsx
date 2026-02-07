@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
+import { useContent } from "@/hooks/use-content"
 import { Card } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
 
@@ -16,14 +17,9 @@ export function ServicesGridSection() {
     // LanguageProvider not mounted — fallback safely
   }
 
-  const services = [
-    { title: t("services.travel"), path: "/services#travel" },
-    { title: t("services.concierge"), path: "/services#concierge" },
-    { title: t("services.residences"), path: "/services#residences" },
-    { title: t("services.relocation"), path: "/services#relocation" },
-    { title: t("services.immigration"), path: "/services#immigration" },
-    { title: t("services.experiences"), path: "/services#experiences" },
-  ]
+  const { services } = useContent()
+
+  const getTitle = (title: string, titleKey?: string) => (titleKey ? t(titleKey) : title)
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">
@@ -31,14 +27,14 @@ export function ServicesGridSection() {
         <h2 className="luxury-section-title text-center mb-12">{t("services.title")}</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, idx) => (
-            <Link key={idx} href={service.path}>
+          {services.map((service) => (
+            <Link key={service.id} href={`/services#${service.slug}`}>
               <Card className="p-8 h-full border-border hover:border-primary/50 transition-all hover:shadow-lg hover:bg-primary/5 cursor-pointer group">
                 <h3 className="font-serif font-bold text-xl mb-4 group-hover:text-primary transition-colors">
-                  {service.title}
+                  {getTitle(service.title, service.titleKey)}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-6">
-                  Discover our premium {service.title.toLowerCase()} offerings
+                  Discover our premium {getTitle(service.title, service.titleKey).toLowerCase()} offerings
                 </p>
                 <div className="flex items-center text-primary text-sm font-medium">
                   Learn More

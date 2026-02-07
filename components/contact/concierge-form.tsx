@@ -37,6 +37,7 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
     serviceInterest: "",
     preferredLanguage: language,
     message: "",
+    website: "",
   })
 
   const services = [
@@ -55,14 +56,21 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
     setError("")
 
     try {
+      if (!formData.serviceInterest) {
+        setError("Please select a service interest to continue.")
+        return
+      }
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
 
+      const responseBody = await response.json().catch(() => null)
+
       if (!response.ok) {
-        throw new Error("Failed to send message")
+        throw new Error(responseBody?.error ?? "Failed to send message")
       }
 
       setSubmitted(true)
@@ -73,11 +81,13 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
         serviceInterest: "",
         preferredLanguage: language,
         message: "",
+        website: "",
       })
 
       setTimeout(() => setSubmitted(false), 5000)
     } catch (err) {
-      setError("Failed to send your request. Please try again or contact us directly.")
+      const message = err instanceof Error ? err.message : "Failed to send your request."
+      setError(`${message} Please try again or contact us directly.`)
       console.error("Form error:", err)
     } finally {
       setLoading(false)
@@ -148,6 +158,7 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
           <Select
             value={formData.serviceInterest}
             onValueChange={(value) => setFormData({ ...formData, serviceInterest: value })}
+            required
           >
             <SelectTrigger className="bg-background border-border">
               <SelectValue placeholder="Select a service" />
@@ -197,6 +208,18 @@ export function ConciergeForm({ title = "Concierge Request", description }: Conc
             required
             rows={5}
             className="bg-background border-border resize-none"
+          />
+        </div>
+
+        <div className="hidden" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <Input
+            id="website"
+            type="text"
+            value={formData.website}
+            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+            autoComplete="off"
+            tabIndex={-1}
           />
         </div>
 
