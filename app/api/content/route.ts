@@ -43,10 +43,6 @@ export async function GET() {
   }
 
   const services = (servicesResponse.data ?? defaultServices).map((item) => mapDbServiceToContent(item))
-  const services = (servicesResponse.data ?? defaultServices).map((item) => ({
-    ...item,
-    titleKey: (item as { title_key?: string | null; titleKey?: string }).title_key ?? item.titleKey,
-  }))
   const destinations = (destinationsResponse.data ?? defaultDestinations).map((item) =>
     mapDbDestinationToContent(item),
   )

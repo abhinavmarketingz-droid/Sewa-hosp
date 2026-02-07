@@ -15,7 +15,6 @@ const bannerSchema = z.object({
   message: z.string().trim().min(4).max(200),
   ctaLabel: z.string().trim().max(80).optional().or(z.literal("")),
   ctaUrl: safeUrlSchema.optional().or(z.literal("")),
-  ctaUrl: z.string().trim().max(200).optional().or(z.literal("")),
   variant: z.enum(["primary", "secondary", "neutral"]).optional(),
   active: z.boolean().optional(),
   position: z.number().int().min(0).max(999).nullable().optional(),

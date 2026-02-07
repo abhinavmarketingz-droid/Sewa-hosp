@@ -105,16 +105,6 @@ export default async function AdminPage() {
   const services =
     servicesResponse.error || !servicesData?.length ? defaultServices : (servicesData as ServiceContent[])
   const destinationsData = destinationsResponse.data?.map((item) => mapDbDestinationToContent(item))
-  const servicesData = servicesResponse.data?.map((item) => ({
-    ...item,
-    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
-  }))
-  const services =
-    servicesResponse.error || !servicesData?.length ? defaultServices : (servicesData as ServiceContent[])
-  const destinationsData = destinationsResponse.data?.map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? null,
-  }))
   const destinations =
     destinationsResponse.error || !destinationsData?.length
       ? defaultDestinations
@@ -123,19 +113,6 @@ export default async function AdminPage() {
   const banners =
     bannersResponse.error || !bannersData?.length ? defaultBanners : (bannersData as BannerContent[])
   const sectionsData = sectionsResponse.data?.map((item) => mapDbSectionToContent(item))
-  const bannersData = bannersResponse.data?.map((item) => ({
-    ...item,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
-  }))
-  const banners =
-    bannersResponse.error || !bannersData?.length ? defaultBanners : (bannersData as BannerContent[])
-  const sectionsData = sectionsResponse.data?.map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? undefined,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
-  }))
   const sections =
     sectionsResponse.error || !sectionsData?.length
       ? defaultCustomSections
@@ -235,13 +212,6 @@ export default async function AdminPage() {
               </CardContent>
             </Card>
           )
-        {requests.length === 0 ? (
-          <Empty className="border-dashed bg-card">
-            <EmptyHeader>
-              <EmptyTitle>No requests yet</EmptyTitle>
-              <EmptyDescription>Concierge requests will appear here once submitted.</EmptyDescription>
-            </EmptyHeader>
-          </Empty>
         ) : (
           <Card>
             <CardHeader>
@@ -267,55 +237,6 @@ export default async function AdminPage() {
         <AdminUserManager canManage={canManageUsers} />
 
         <AdminAuditLog canRead={canReadAudit} />
-        <AdminUserManager canManage={canManageUsers} />
-
-        <AdminAuditLog canRead={canReadAudit} />
-              <CardDescription>Showing the most recent {requests.length} submissions.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Guest</TableHead>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Language</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead>Contact</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {requests.map((request) => (
-                    <TableRow key={request.id}>
-                      <TableCell>
-                        <div className="flex flex-col gap-1">
-                          <span className="font-medium text-foreground">{request.name}</span>
-                          <span className="text-xs text-muted-foreground">{request.nationality ?? "—"}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{request.service_interest}</Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {request.preferred_language ?? "—"}
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {formatTimestamp(request.submitted_at)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col gap-1 text-sm">
-                          <a className="text-primary underline-offset-4 hover:underline" href={`mailto:${request.email}`}>
-                            {request.email}
-                          </a>
-                          <span className="text-xs text-muted-foreground line-clamp-2">{request.message}</span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
       </section>
     </main>
   )

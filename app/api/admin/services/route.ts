@@ -30,10 +30,6 @@ export async function GET() {
   }
 
   const services = (data ?? []).map((item) => mapDbServiceToContent(item))
-  const services = (data ?? []).map((item) => ({
-    ...item,
-    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
-  }))
   return NextResponse.json({ services })
 }
 
@@ -74,9 +70,5 @@ export async function POST(request: Request) {
 
   const { data } = await supabase.from("content_services").select("*").order("position", { ascending: true })
   const services = (data ?? []).map((item) => mapDbServiceToContent(item))
-  const services = (data ?? []).map((item) => ({
-    ...item,
-    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
-  }))
   return NextResponse.json({ services })
 }

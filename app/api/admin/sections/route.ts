@@ -18,7 +18,6 @@ const sectionSchema = z.object({
   imageUrl: z.string().trim().url().optional().or(z.literal("")),
   ctaLabel: z.string().trim().max(80).optional().or(z.literal("")),
   ctaUrl: safeUrlSchema.optional().or(z.literal("")),
-  ctaUrl: z.string().trim().max(200).optional().or(z.literal("")),
   position: z.number().int().min(0).max(999).nullable().optional(),
   active: z.boolean().optional(),
 })

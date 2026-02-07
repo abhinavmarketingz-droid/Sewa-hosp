@@ -22,12 +22,6 @@ RESEND_API_KEY=your_resend_api_key
 ### 2. Admin Dashboard Access
 
 Admin access uses Supabase Auth (email/password). Create users in Supabase Auth and assign roles in the `profiles` table.
-The admin dashboard is protected by HTTP Basic Auth:
-
-```
-ADMIN_USERNAME=your_admin_username
-ADMIN_PASSWORD=your_admin_password
-```
 
 ### 3. Database Integration (Required for Admin)
 
@@ -178,8 +172,6 @@ git push origin main
 
 1. `RESEND_API_KEY` - For email functionality
 2. Supabase credentials (required for request storage + admin dashboard + auth)
-2. `ADMIN_USERNAME` + `ADMIN_PASSWORD` - For admin dashboard access
-3. Supabase credentials (required for request storage + admin dashboard)
 
 ## Page Structure & Navigation
 
