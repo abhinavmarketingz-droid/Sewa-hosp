@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -75,7 +76,7 @@ export function AdminAuditLog({ canRead }: AdminAuditLogProps) {
                 <TableCell>{log.action}</TableCell>
                 <TableCell>{log.resource}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {new Date(log.created_at).toLocaleString()}
+                  {format(new Date(log.created_at), "PPP p")}
                 </TableCell>
               </TableRow>
             ))}

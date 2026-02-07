@@ -10,6 +10,10 @@ import { AdminUserManager } from "@/components/admin/admin-user-manager"
 import { AdminAuditLog } from "@/components/admin/admin-audit-log"
 import { AdminBackups } from "@/components/admin/admin-backups"
 import { AdminMediaManager } from "@/components/admin/admin-media-manager"
+import { AdminExtensions } from "@/components/admin/admin-extensions"
+import { AdminLicenseStatus } from "@/components/admin/admin-license-status"
+import { AdminThemeManager } from "@/components/admin/admin-theme-manager"
+import { AdminPageBuilder } from "@/components/admin/admin-page-builder"
 import {
   defaultBanners,
   defaultCustomSections,
@@ -233,6 +237,14 @@ export default async function AdminPage() {
           {hasPermission(context.role, "content:read") ? <AdminMediaManager /> : null}
           {hasPermission(context.role, "backups:read") ? <AdminBackups /> : null}
         </div>
+
+        {hasPermission(context.role, "extensions:read") ? <AdminExtensions /> : null}
+
+        {hasPermission(context.role, "license:read") ? <AdminLicenseStatus /> : null}
+
+        {hasPermission(context.role, "theme:read") ? <AdminThemeManager /> : null}
+
+        {hasPermission(context.role, "content:write") ? <AdminPageBuilder /> : null}
 
         <AdminUserManager canManage={canManageUsers} />
 

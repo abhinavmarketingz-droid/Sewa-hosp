@@ -30,18 +30,15 @@ export const useContent = () => {
   const [content, setContent] = useState<ContentPayload>(fallbackContent)
 
   useEffect(() => {
-    let isMounted = true
+    const controller = new AbortController()
 
     const load = async () => {
       try {
-        const response = await fetch("/api/content", { cache: "no-store" })
+        const response = await fetch("/api/content", { cache: "no-store", signal: controller.signal })
         if (!response.ok) {
           return
         }
         const data = (await response.json()) as ContentPayload
-        if (!isMounted) {
-          return
-        }
         if (
           Array.isArray(data?.services) &&
           Array.isArray(data?.destinations) &&
@@ -55,15 +52,17 @@ export const useContent = () => {
             sections: data.sections.length ? data.sections : defaultCustomSections,
           })
         }
-      } catch {
-        // Ignore fetch errors and keep defaults.
+      } catch (error) {
+        if (!(error instanceof Error && error.name === "AbortError")) {
+          console.error("Failed to load content:", error)
+        }
       }
     }
 
     load()
 
     return () => {
-      isMounted = false
+      controller.abort()
     }
   }, [])
 
