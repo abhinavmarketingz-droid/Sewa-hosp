@@ -5,7 +5,7 @@
 - [x] Root layout.tsx properly configured
 - [x] Providers wrapper with "use client" directive
 - [x] LanguageProvider wraps entire app
-- [x] All pages have "use client" directive
+- [x] Public pages use "use client" directive where language context is required
 - [x] Header component uses useLanguage hook
 - [x] Footer component uses useLanguage hook
 - [x] All 7 pages properly linked in navigation
@@ -28,6 +28,7 @@
 - [x] `/destinations` - Destinations page with 7 locations
 - [x] `/partners` - Partners page with 4 categories
 - [x] `/contact` - Contact page with form
+- [x] `/admin` - Admin dashboard (Basic Auth protected)
 
 ## Navigation Links ✓
 
@@ -44,6 +45,7 @@
 - [x] API route `/api/contact` created
 - [x] Server-side form validation
 - [x] Email integration with Resend API
+- [x] Concierge request storage via Supabase
 - [x] Confirmation email to user
 - [x] Notification email to concierge team
 - [x] Error handling and success messages
@@ -61,10 +63,10 @@
 
 ## Environment & Integrations ✓
 
-- [x] Supabase integration available
+- [x] Supabase integration available (required for admin)
 - [x] Neon integration available
-- [x] RESEND_API_KEY configured
-- [x] Environment variables properly referenced
+- [x] RESEND_API_KEY referenced
+- [x] Environment variables documented
 - [x] API endpoint properly configured
 
 ## Documentation ✓
