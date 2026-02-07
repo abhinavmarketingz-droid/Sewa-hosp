@@ -9,7 +9,14 @@ import { useContent } from "@/hooks/use-content"
 export default function DestinationsPage() {
   const { destinations } = useContent()
 
-  const iconMap = [Plane, Utensils, Spa, MapPin]
+  const iconBySlug: Record<string, typeof MapPin> = {
+    "delhi-ncr": Plane,
+    mumbai: Utensils,
+    goa: Spa,
+    jaipur: MapPin,
+    bengaluru: Plane,
+    hyderabad: Utensils,
+  }
 
   return (
     <>
@@ -29,8 +36,8 @@ export default function DestinationsPage() {
         <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4">
             <div className="space-y-12">
-              {destinations.map((dest, idx) => {
-                const Icon = iconMap[idx % iconMap.length]
+              {destinations.map((dest) => {
+                const Icon = iconBySlug[dest.slug] ?? MapPin
                 return (
                   <div key={dest.id} id={dest.slug} className="scroll-mt-20">
                     <Card className="p-8 md:p-12 border-border hover:border-primary/50 transition-all">

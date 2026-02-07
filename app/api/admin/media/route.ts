@@ -1,8 +1,34 @@
 import { NextResponse } from "next/server"
-import { getSupabaseAdminClient } from "@/lib/supabase-server"
+import { getSupabaseAdminClient, getSupabaseUrl } from "@/lib/supabase-server"
 import { requirePermission } from "@/lib/admin-auth"
 
 const resolveMediaBucket = () => process.env.SUPABASE_MEDIA_BUCKET ?? "media"
+const resolveMaxUploadBytes = () => {
+  const raw = process.env.SUPABASE_MEDIA_MAX_BYTES
+  if (!raw) {
+    return 10 * 1024 * 1024
+  }
+  const parsed = Number(raw)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 10 * 1024 * 1024
+}
+
+const allowedMimeTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "video/mp4",
+  "video/webm",
+  "application/pdf",
+])
+
+const allowedExtensions = new Set(["jpg", "jpeg", "png", "webp", "gif", "mp4", "webm", "pdf"])
+
+const resolveExtension = (value: string) => {
+  const segments = value.split(".")
+  const extension = segments.length > 1 ? segments.at(-1) : ""
+  return extension?.toLowerCase() ?? ""
+}
 
 const buildPublicUrl = (supabaseUrl: string, bucket: string, path: string) =>
   `${supabaseUrl}/storage/v1/object/public/${bucket}/${encodeURIComponent(path)}`
@@ -26,7 +52,7 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
+  const supabaseUrl = getSupabaseUrl() ?? ""
   const files = (data ?? []).map((item) => ({
     name: item.name,
     id: item.id ?? item.name,
@@ -60,6 +86,20 @@ export async function POST(request: Request) {
   const safePath = typeof path === "string" && path.trim() ? path.trim() : file.name
   if (!safePath) {
     return NextResponse.json({ error: "Invalid file name" }, { status: 400 })
+  }
+
+  const extension = resolveExtension(safePath)
+  if (!extension || !allowedExtensions.has(extension)) {
+    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 })
+  }
+
+  if (!file.type || !allowedMimeTypes.has(file.type)) {
+    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 })
+  }
+
+  const maxBytes = resolveMaxUploadBytes()
+  if (file.size > maxBytes) {
+    return NextResponse.json({ error: `File exceeds ${Math.round(maxBytes / 1024 / 1024)}MB limit` }, { status: 400 })
   }
 
   const bucket = resolveMediaBucket()
