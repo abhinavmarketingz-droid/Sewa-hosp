@@ -19,6 +19,9 @@ const rolePermissions: Record<Role, Permission[]> = {
     "audit:read",
     "backups:read",
   ],
+
+const rolePermissions: Record<Role, Permission[]> = {
+  admin: ["content:read", "content:write", "requests:read", "users:read", "users:write", "audit:read"],
   editor: ["content:read", "content:write", "requests:read"],
   viewer: ["content:read", "requests:read"],
 }

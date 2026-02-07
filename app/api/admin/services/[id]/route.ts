@@ -51,6 +51,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
   const { data } = await supabase.from("content_services").select("*").order("position", { ascending: true })
   const services = (data ?? []).map((item) => mapDbServiceToContent(item))
+  const services = (data ?? []).map((item) => ({
+    ...item,
+    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
+  }))
   return NextResponse.json({ services })
 }
 
@@ -79,5 +83,9 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
 
   const { data } = await supabase.from("content_services").select("*").order("position", { ascending: true })
   const services = (data ?? []).map((item) => mapDbServiceToContent(item))
+  const services = (data ?? []).map((item) => ({
+    ...item,
+    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
+  }))
   return NextResponse.json({ services })
 }
