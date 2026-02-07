@@ -5,7 +5,7 @@ import { getSupabaseUrl } from "@/lib/supabase-server"
 const resolveAnonKey = () =>
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
-export const createSupabaseServerClient = () => {
+export const createSupabaseServerClient = async () => {
   const supabaseUrl = getSupabaseUrl()
   const anonKey = resolveAnonKey()
 
@@ -13,8 +13,8 @@ export const createSupabaseServerClient = () => {
     return null
   }
 
-  const cookieStore = cookies()
-  const headerStore = headers()
+  const cookieStore = await cookies()
+  const headerStore = await headers()
 
   return createServerClient(supabaseUrl, anonKey, {
     cookies: {

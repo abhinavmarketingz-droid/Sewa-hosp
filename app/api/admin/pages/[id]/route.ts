@@ -40,7 +40,7 @@ export async function PUT(
   await logAudit({
     actorId: guard.context.userId,
     actorEmail: guard.context.email,
-    action: "page.update",
+    action: "content.update",
     resource: "pages",
     metadata: { id },
   })
@@ -69,7 +69,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   await logAudit({
     actorId: guard.context.userId,
     actorEmail: guard.context.email,
-    action: "page.delete",
+    action: "content.delete",
     resource: "pages",
     metadata: { id },
   })
