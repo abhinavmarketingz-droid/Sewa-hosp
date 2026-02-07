@@ -28,7 +28,7 @@ This file binds all context documents into **actionable tasks**. Each task refer
   - Theme extension pack format
   - Theme preview + rollback in admin
 
-### 4) Page Builder & Content Blocks
+### 4) Page Builder & Content Blocks ✅
 - **Goal**: Add page creation and templated blocks.
 - **Context**: `planning/context-product.md` (Page Builder), `planning/context-technical.md` (Data Model Upgrades)
 - **Deliverables**:
