@@ -22,15 +22,7 @@ const contactSchema = z.object({
     .refine((value) => !value || value.trim().length === 0, "Spam detected"),
 })
 
-interface ContactFormData {
-  name: string
-  email: string
-  nationality: string
-  serviceInterest: string
-  preferredLanguage: string
-  message: string
-  website?: string
-}
+type ContactFormData = z.infer<typeof contactSchema>
 
 interface ConciergeRequestRecord {
   name: string

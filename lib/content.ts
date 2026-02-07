@@ -40,6 +40,37 @@ export type CustomSectionContent = {
   active?: boolean
 }
 
+type DbDestination = DestinationContent & { image_url?: string | null }
+type DbBanner = BannerContent & { cta_label?: string | null; cta_url?: string | null }
+type DbSection = CustomSectionContent & { image_url?: string | null; cta_label?: string | null; cta_url?: string | null }
+
+export const mapDbDestinationToContent = (dbDestination: DbDestination): DestinationContent => {
+  const { image_url, ...rest } = dbDestination
+  return {
+    ...rest,
+    imageUrl: image_url ?? dbDestination.imageUrl ?? undefined,
+  }
+}
+
+export const mapDbBannerToContent = (dbBanner: DbBanner): BannerContent => {
+  const { cta_label, cta_url, ...rest } = dbBanner
+  return {
+    ...rest,
+    ctaLabel: cta_label ?? dbBanner.ctaLabel ?? undefined,
+    ctaUrl: cta_url ?? dbBanner.ctaUrl ?? undefined,
+  }
+}
+
+export const mapDbSectionToContent = (dbSection: DbSection): CustomSectionContent => {
+  const { image_url, cta_label, cta_url, ...rest } = dbSection
+  return {
+    ...rest,
+    imageUrl: image_url ?? dbSection.imageUrl ?? undefined,
+    ctaLabel: cta_label ?? dbSection.ctaLabel ?? undefined,
+    ctaUrl: cta_url ?? dbSection.ctaUrl ?? undefined,
+  }
+}
+
 export const defaultServices: ServiceContent[] = [
   {
     id: "service-travel",

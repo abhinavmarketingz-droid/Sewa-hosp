@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { mapDbSectionToContent } from "@/lib/content"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { requirePermission } from "@/lib/admin-auth"
 import { logAudit } from "@/lib/audit"
@@ -56,12 +57,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   })
 
   const { data } = await supabase.from("content_sections").select("*").order("position", { ascending: true })
-  const sections = (data ?? []).map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? undefined,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
-  }))
+  const sections = (data ?? []).map((item) => mapDbSectionToContent(item))
   return NextResponse.json({ sections })
 }
 
@@ -89,11 +85,6 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
   })
 
   const { data } = await supabase.from("content_sections").select("*").order("position", { ascending: true })
-  const sections = (data ?? []).map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? undefined,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
-  }))
+  const sections = (data ?? []).map((item) => mapDbSectionToContent(item))
   return NextResponse.json({ sections })
 }

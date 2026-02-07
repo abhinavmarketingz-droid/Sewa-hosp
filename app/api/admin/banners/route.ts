@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
+import { mapDbBannerToContent } from "@/lib/content"
 import { requirePermission } from "@/lib/admin-auth"
 import { logAudit } from "@/lib/audit"
 
@@ -29,11 +30,7 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const banners = (data ?? []).map((item) => ({
-    ...item,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
-  }))
+  const banners = (data ?? []).map((item) => mapDbBannerToContent(item))
   return NextResponse.json({ banners })
 }
 
@@ -77,10 +74,6 @@ export async function POST(request: Request) {
   })
 
   const { data } = await supabase.from("content_banners").select("*").order("position", { ascending: true })
-  const banners = (data ?? []).map((item) => ({
-    ...item,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
-  }))
+  const banners = (data ?? []).map((item) => mapDbBannerToContent(item))
   return NextResponse.json({ banners })
 }

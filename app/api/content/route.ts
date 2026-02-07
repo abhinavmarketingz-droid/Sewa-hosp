@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server"
-import { defaultBanners, defaultCustomSections, defaultDestinations, defaultServices } from "@/lib/content"
+import {
+  defaultBanners,
+  defaultCustomSections,
+  defaultDestinations,
+  defaultServices,
+  mapDbBannerToContent,
+  mapDbDestinationToContent,
+  mapDbSectionToContent,
+} from "@/lib/content"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
-
-const mapDestinations = (data: Array<Record<string, unknown>> | null) =>
-  (data ?? []).map((item) => ({
-    ...item,
-    imageUrl: (item.image_url as string | null) ?? (item.imageUrl as string | null) ?? undefined,
-  }))
 
 export async function GET() {
   const supabase = getSupabaseAdminClient()
@@ -43,18 +45,15 @@ export async function GET() {
     ...item,
     titleKey: (item as { title_key?: string | null; titleKey?: string }).title_key ?? item.titleKey,
   }))
-  const destinations = mapDestinations(destinationsResponse.data ?? null)
+  const destinations = (destinationsResponse.data ?? defaultDestinations).map((item) =>
+    mapDbDestinationToContent(item),
+  )
   const banners = (bannerResponse.data ?? defaultBanners).map((item) => ({
-    ...item,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? item.ctaLabel,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? item.ctaUrl,
+    ...mapDbBannerToContent(item),
     active: (item as { active?: boolean | null }).active ?? true,
   }))
   const sections = (sectionsResponse.data ?? defaultCustomSections).map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? item.imageUrl,
-    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? item.ctaLabel,
-    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? item.ctaUrl,
+    ...mapDbSectionToContent(item),
     active: (item as { active?: boolean | null }).active ?? true,
   }))
 

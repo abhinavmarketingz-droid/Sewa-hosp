@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
+import { mapDbDestinationToContent } from "@/lib/content"
 import { requirePermission } from "@/lib/admin-auth"
 import { logAudit } from "@/lib/audit"
 
@@ -33,10 +34,7 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const destinations = (data ?? []).map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? null,
-  }))
+  const destinations = (data ?? []).map((item) => mapDbDestinationToContent(item))
 
   return NextResponse.json({ destinations })
 }
@@ -77,9 +75,6 @@ export async function POST(request: Request) {
   })
 
   const { data } = await supabase.from("content_destinations").select("*").order("position", { ascending: true })
-  const destinations = (data ?? []).map((item) => ({
-    ...item,
-    imageUrl: (item as { image_url?: string | null }).image_url ?? null,
-  }))
+  const destinations = (data ?? []).map((item) => mapDbDestinationToContent(item))
   return NextResponse.json({ destinations })
 }

@@ -86,7 +86,7 @@ export function AdminContentManager({
       titleKey: serviceForm.titleKey.trim(),
       description: serviceForm.description.trim(),
       items: parseLines(serviceForm.items),
-      position: serviceForm.position ? Number(serviceForm.position) : null,
+      position: serviceForm.position.trim() ? Number(serviceForm.position) : null,
     }),
     [serviceForm],
   )
@@ -100,7 +100,7 @@ export function AdminContentManager({
       services: parseLines(destinationForm.services),
       highlights: parseLines(destinationForm.highlights),
       imageUrl: destinationForm.imageUrl.trim(),
-      position: destinationForm.position ? Number(destinationForm.position) : null,
+      position: destinationForm.position.trim() ? Number(destinationForm.position) : null,
     }),
     [destinationForm],
   )
@@ -113,7 +113,7 @@ export function AdminContentManager({
       ctaUrl: bannerForm.ctaUrl.trim(),
       variant: bannerForm.variant,
       active: bannerForm.active,
-      position: bannerForm.position ? Number(bannerForm.position) : null,
+      position: bannerForm.position.trim() ? Number(bannerForm.position) : null,
     }),
     [bannerForm],
   )
@@ -126,7 +126,7 @@ export function AdminContentManager({
       imageUrl: sectionForm.imageUrl.trim(),
       ctaLabel: sectionForm.ctaLabel.trim(),
       ctaUrl: sectionForm.ctaUrl.trim(),
-      position: sectionForm.position ? Number(sectionForm.position) : null,
+      position: sectionForm.position.trim() ? Number(sectionForm.position) : null,
       active: sectionForm.active,
     }),
     [sectionForm],
