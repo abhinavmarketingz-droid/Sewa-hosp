@@ -22,7 +22,11 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ services: data ?? [] })
+  const services = (data ?? []).map((item) => ({
+    ...item,
+    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
+  }))
+  return NextResponse.json({ services })
 }
 
 export async function POST(request: Request) {
