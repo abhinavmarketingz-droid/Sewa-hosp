@@ -5,10 +5,17 @@ import { mapDbBannerToContent } from "@/lib/content"
 import { requirePermission } from "@/lib/admin-auth"
 import { logAudit } from "@/lib/audit"
 
+const safeUrlSchema = z
+  .string()
+  .trim()
+  .url()
+  .refine((value) => ["http:", "https:"].includes(new URL(value).protocol), "Invalid URL protocol")
+
 const bannerSchema = z.object({
   slug: z.string().trim().min(2).max(120),
   message: z.string().trim().min(4).max(200),
   ctaLabel: z.string().trim().max(80).optional().or(z.literal("")),
+  ctaUrl: safeUrlSchema.optional().or(z.literal("")),
   ctaUrl: z.string().trim().max(200).optional().or(z.literal("")),
   variant: z.enum(["primary", "secondary", "neutral"]).optional(),
   active: z.boolean().optional(),

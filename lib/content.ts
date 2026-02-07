@@ -43,6 +43,15 @@ export type CustomSectionContent = {
 type DbDestination = DestinationContent & { image_url?: string | null }
 type DbBanner = BannerContent & { cta_label?: string | null; cta_url?: string | null }
 type DbSection = CustomSectionContent & { image_url?: string | null; cta_label?: string | null; cta_url?: string | null }
+type DbService = ServiceContent & { title_key?: string | null }
+
+export const mapDbServiceToContent = (dbService: DbService): ServiceContent => {
+  const { title_key, ...rest } = dbService
+  return {
+    ...rest,
+    titleKey: title_key ?? dbService.titleKey ?? undefined,
+  }
+}
 
 export const mapDbDestinationToContent = (dbDestination: DbDestination): DestinationContent => {
   const { image_url, ...rest } = dbDestination

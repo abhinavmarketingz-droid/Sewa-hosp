@@ -8,11 +8,17 @@ import { AdminAuthBar } from "@/components/admin/admin-auth-bar"
 import { AdminContentManager } from "@/components/admin/admin-content-manager"
 import { AdminUserManager } from "@/components/admin/admin-user-manager"
 import { AdminAuditLog } from "@/components/admin/admin-audit-log"
+import { AdminBackups } from "@/components/admin/admin-backups"
+import { AdminMediaManager } from "@/components/admin/admin-media-manager"
 import {
   defaultBanners,
   defaultCustomSections,
   defaultDestinations,
   defaultServices,
+  mapDbBannerToContent,
+  mapDbDestinationToContent,
+  mapDbSectionToContent,
+  mapDbServiceToContent,
   type BannerContent,
   type CustomSectionContent,
   type DestinationContent,
@@ -95,6 +101,10 @@ export default async function AdminPage() {
     supabase.from("content_sections").select("*").order("position", { ascending: true }),
   ])
 
+  const servicesData = servicesResponse.data?.map((item) => mapDbServiceToContent(item))
+  const services =
+    servicesResponse.error || !servicesData?.length ? defaultServices : (servicesData as ServiceContent[])
+  const destinationsData = destinationsResponse.data?.map((item) => mapDbDestinationToContent(item))
   const servicesData = servicesResponse.data?.map((item) => ({
     ...item,
     titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
@@ -109,6 +119,10 @@ export default async function AdminPage() {
     destinationsResponse.error || !destinationsData?.length
       ? defaultDestinations
       : (destinationsData as DestinationContent[])
+  const bannersData = bannersResponse.data?.map((item) => mapDbBannerToContent(item))
+  const banners =
+    bannersResponse.error || !bannersData?.length ? defaultBanners : (bannersData as BannerContent[])
+  const sectionsData = sectionsResponse.data?.map((item) => mapDbSectionToContent(item))
   const bannersData = bannersResponse.data?.map((item) => ({
     ...item,
     ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
@@ -245,6 +259,14 @@ export default async function AdminPage() {
           canEdit={canEditContent}
         />
 
+        <div className="grid gap-6 lg:grid-cols-2">
+          {hasPermission(context.role, "content:read") ? <AdminMediaManager /> : null}
+          {hasPermission(context.role, "backups:read") ? <AdminBackups /> : null}
+        </div>
+
+        <AdminUserManager canManage={canManageUsers} />
+
+        <AdminAuditLog canRead={canReadAudit} />
         <AdminUserManager canManage={canManageUsers} />
 
         <AdminAuditLog canRead={canReadAudit} />

@@ -16,6 +16,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  const supabaseUrl = getSupabaseUrl()
+  const anonKey = resolveAnonKey()
+
+  if (!supabaseUrl || !anonKey) {
   if (!isAuthConfigured()) {
     if (isApi) {
       return NextResponse.json({ error: "Auth is not configured" }, { status: 503 })
@@ -25,6 +29,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next()
+  const supabase = createServerClient(supabaseUrl, anonKey, {
   const supabase = createServerClient(getSupabaseUrl() as string, resolveAnonKey() as string, {
     cookies: {
       get(name) {

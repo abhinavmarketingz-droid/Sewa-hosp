@@ -5,12 +5,19 @@ import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { requirePermission } from "@/lib/admin-auth"
 import { logAudit } from "@/lib/audit"
 
+const safeUrlSchema = z
+  .string()
+  .trim()
+  .url()
+  .refine((value) => ["http:", "https:"].includes(new URL(value).protocol), "Invalid URL protocol")
+
 const sectionSchema = z.object({
   slug: z.string().trim().min(2).max(120),
   title: z.string().trim().min(2).max(200),
   body: z.string().trim().min(10).max(1200),
   imageUrl: z.string().trim().url().optional().or(z.literal("")),
   ctaLabel: z.string().trim().max(80).optional().or(z.literal("")),
+  ctaUrl: safeUrlSchema.optional().or(z.literal("")),
   ctaUrl: z.string().trim().max(200).optional().or(z.literal("")),
   position: z.number().int().min(0).max(999).nullable().optional(),
   active: z.boolean().optional(),
