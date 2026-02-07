@@ -159,12 +159,12 @@ at Header (/components/header)
 
 ### Supabase Setup
 ```typescript
-// Future: Store form submissions
+// Store form submissions (used by /api/contact and /admin)
 const { data } = await supabase
   .from('concierge_requests')
   .insert([{ name, email, message, ... }])
 
-// Future: User authentication
+// Optional: User authentication for other features
 const { user } = await supabase.auth.signUp({
   email, password
 })
@@ -188,9 +188,7 @@ const result = await sql`
    - Start receiving concierge requests
 
 2. **For Future Features:**
-   - Connect Supabase to store submissions
    - Add user authentication
-   - Build admin dashboard
    - Implement CMS for content
 
 3. **For Customization:**

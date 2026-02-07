@@ -1,7 +1,7 @@
 # SEWA Hospitality Website - Email Integration Setup Guide
 
 ## Overview
-The contact form is fully functional and ready for email service integration. Currently, it logs submissions to the console and returns success responses.
+The contact form is fully functional with server validation, Supabase storage, and Resend email delivery. Submissions are stored and visible in the admin dashboard once Supabase is configured.
 
 ## Email Service Integration Options
 
@@ -25,7 +25,7 @@ async function sendEmail(data: ContactFormData) {
       html: `<h2>Request Received</h2><p>Thank you for your interest in SEWA services.</p>`,
     });
     
-    // Also send admin notification
+    // Optional: send admin notification email (in addition to dashboard storage)
     await resend.emails.send({
       from: 'system@sewa-hospitality.com',
       to: 'admin@sewa-hospitality.com',
@@ -52,8 +52,8 @@ async function sendEmail(data: ContactFormData) {
 2. Configure in `.env.local` with SMTP credentials
 3. Update route.ts with nodemailer transporter
 
-## Database Integration (Optional)
-To store form submissions:
+## Database Integration (Required for Admin)
+To store form submissions and power the admin dashboard:
 
 ### With Supabase:
 ```typescript
@@ -61,7 +61,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-const { error } = await supabase
+  const { error } = await supabase
   .from('concierge_requests')
   .insert([data]);
 ```
@@ -82,19 +82,25 @@ await sql`INSERT INTO concierge_requests (name, email, ...) VALUES (...)`;
 - **Preferred Language**: 10 languages supported
 - **Message**: Required, long form text
 
+## Admin Dashboard
+
+- The admin panel lives at `/admin`
+- It is protected by HTTP Basic Auth (`ADMIN_USERNAME` + `ADMIN_PASSWORD`)
+- Concierge requests are stored in Supabase and listed in the dashboard
+
 ## Response Flow
 1. User submits form → Client-side validation
 2. POST to `/api/contact` with form data
 3. Server-side validation
-4. Email sent to user + admin
-5. Data stored in database (if configured)
+4. Data stored in Supabase
+5. Email sent to user + concierge team
 6. Success message displayed to user
 
 ## Deployment Checklist
 - [ ] Configure email service provider
 - [ ] Add API keys to environment variables
 - [ ] Update email templates
-- [ ] Set up database for submissions (optional)
+- [ ] Set up Supabase database for submissions
 - [ ] Test form submission end-to-end
 - [ ] Configure SMTP/email sender domain
 - [ ] Set up email forwarding rules

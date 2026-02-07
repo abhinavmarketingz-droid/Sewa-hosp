@@ -19,13 +19,24 @@ Add these to your Vercel project environment variables:
 RESEND_API_KEY=your_resend_api_key
 ```
 
-### 2. Optional Database Integration
+### 2. Admin Dashboard Access
 
-For future backend features:
+The admin dashboard is protected by HTTP Basic Auth:
+
+```
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=your_admin_password
+```
+
+### 3. Database Integration (Required for Admin)
+
+The admin dashboard and contact request storage require Supabase:
 
 **Supabase:**
 ```
+SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
@@ -165,7 +176,8 @@ git push origin main
 ### Environment Variables Needed on Vercel
 
 1. `RESEND_API_KEY` - For email functionality
-2. Optional: Supabase/Neon credentials for future database features
+2. `ADMIN_USERNAME` + `ADMIN_PASSWORD` - For admin dashboard access
+3. Supabase credentials (required for request storage + admin dashboard)
 
 ## Page Structure & Navigation
 
@@ -184,9 +196,64 @@ git push origin main
 ```
 User fills form → Client validation → API POST to /api/contact
    ↓
-Server validation → Resend email send to concierge + confirmation to user
+Server validation → Supabase storage → Resend email send to concierge + confirmation to user
    ↓
 Success message displayed → Form resets after 5 seconds
+```
+
+## Supabase Table Setup
+
+Create a `concierge_requests` table in Supabase:
+
+```sql
+create table if not exists concierge_requests (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  nationality text,
+  service_interest text not null,
+  preferred_language text,
+  message text not null,
+  submitted_at timestamptz not null default now(),
+  ip_address text,
+  user_agent text
+);
+
+create index if not exists concierge_requests_submitted_at_idx
+  on concierge_requests (submitted_at desc);
+```
+
+Create content tables for admin-managed services and destinations:
+
+```sql
+create table if not exists content_services (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  description text not null,
+  items text[] not null,
+  position integer default 0,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists content_destinations (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  headline text not null,
+  description text not null,
+  services text[] not null,
+  highlights text[] not null,
+  image_url text,
+  position integer default 0,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists content_services_position_idx
+  on content_services (position asc);
+
+create index if not exists content_destinations_position_idx
+  on content_destinations (position asc);
 ```
 
 ## Responsive Breakpoints
