@@ -1,16 +1,29 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { defaultDestinations, defaultServices, type DestinationContent, type ServiceContent } from "@/lib/content"
+import {
+  defaultBanners,
+  defaultCustomSections,
+  defaultDestinations,
+  defaultServices,
+  type BannerContent,
+  type CustomSectionContent,
+  type DestinationContent,
+  type ServiceContent,
+} from "@/lib/content"
 
 type ContentPayload = {
   services: ServiceContent[]
   destinations: DestinationContent[]
+  banners: BannerContent[]
+  sections: CustomSectionContent[]
 }
 
 const fallbackContent: ContentPayload = {
   services: defaultServices,
   destinations: defaultDestinations,
+  banners: defaultBanners,
+  sections: defaultCustomSections,
 }
 
 export const useContent = () => {
@@ -29,10 +42,17 @@ export const useContent = () => {
         if (!isMounted) {
           return
         }
-        if (Array.isArray(data?.services) && Array.isArray(data?.destinations)) {
+        if (
+          Array.isArray(data?.services) &&
+          Array.isArray(data?.destinations) &&
+          Array.isArray(data?.banners) &&
+          Array.isArray(data?.sections)
+        ) {
           setContent({
             services: data.services.length ? data.services : defaultServices,
             destinations: data.destinations.length ? data.destinations : defaultDestinations,
+            banners: data.banners.length ? data.banners : defaultBanners,
+            sections: data.sections.length ? data.sections : defaultCustomSections,
           })
         }
       } catch {

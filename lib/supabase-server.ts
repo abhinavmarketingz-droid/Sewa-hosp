@@ -2,11 +2,11 @@ import "server-only"
 
 import { createClient } from "@supabase/supabase-js"
 
-const getSupabaseUrl = () =>
+const resolveSupabaseUrl = () =>
   process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
 
 export const getSupabaseAdminClient = () => {
-  const supabaseUrl = getSupabaseUrl()
+  const supabaseUrl = resolveSupabaseUrl()
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl || !serviceRoleKey) {
@@ -18,3 +18,5 @@ export const getSupabaseAdminClient = () => {
     global: { headers: { "X-Client-Info": "sewa-hospitality-admin" } },
   })
 }
+
+export const getSupabaseUrl = () => resolveSupabaseUrl()

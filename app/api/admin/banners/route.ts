@@ -4,12 +4,13 @@ import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { requirePermission } from "@/lib/admin-auth"
 import { logAudit } from "@/lib/audit"
 
-const serviceSchema = z.object({
+const bannerSchema = z.object({
   slug: z.string().trim().min(2).max(120),
-  title: z.string().trim().min(2).max(200),
-  titleKey: z.string().trim().min(2).max(200).optional().or(z.literal("")),
-  description: z.string().trim().min(10).max(600),
-  items: z.array(z.string().trim().min(1).max(200)).min(1).max(20),
+  message: z.string().trim().min(4).max(200),
+  ctaLabel: z.string().trim().max(80).optional().or(z.literal("")),
+  ctaUrl: z.string().trim().max(200).optional().or(z.literal("")),
+  variant: z.enum(["primary", "secondary", "neutral"]).optional(),
+  active: z.boolean().optional(),
   position: z.number().int().min(0).max(999).nullable().optional(),
 })
 
@@ -23,16 +24,17 @@ export async function GET() {
     return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
   }
 
-  const { data, error } = await supabase.from("content_services").select("*").order("position", { ascending: true })
+  const { data, error } = await supabase.from("content_banners").select("*").order("position", { ascending: true })
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const services = (data ?? []).map((item) => ({
+  const banners = (data ?? []).map((item) => ({
     ...item,
-    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
+    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
+    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
   }))
-  return NextResponse.json({ services })
+  return NextResponse.json({ banners })
 }
 
 export async function POST(request: Request) {
@@ -46,18 +48,22 @@ export async function POST(request: Request) {
   }
 
   const payload = await request.json()
-  const parsed = serviceSchema.safeParse(payload)
+  const parsed = bannerSchema.safeParse(payload)
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.errors[0]?.message ?? "Invalid request" }, { status: 400 })
   }
 
   const insertPayload = {
-    ...parsed.data,
-    title_key: parsed.data.titleKey || null,
+    slug: parsed.data.slug,
+    message: parsed.data.message,
+    cta_label: parsed.data.ctaLabel || null,
+    cta_url: parsed.data.ctaUrl || null,
+    variant: parsed.data.variant ?? "primary",
+    active: parsed.data.active ?? true,
     position: parsed.data.position ?? null,
   }
 
-  const { error } = await supabase.from("content_services").insert([insertPayload])
+  const { error } = await supabase.from("content_banners").insert([insertPayload])
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
@@ -66,14 +72,15 @@ export async function POST(request: Request) {
     actorId: guard.context.userId,
     actorEmail: guard.context.email,
     action: "content.create",
-    resource: "content_services",
+    resource: "content_banners",
     metadata: { slug: parsed.data.slug },
   })
 
-  const { data } = await supabase.from("content_services").select("*").order("position", { ascending: true })
-  const services = (data ?? []).map((item) => ({
+  const { data } = await supabase.from("content_banners").select("*").order("position", { ascending: true })
+  const banners = (data ?? []).map((item) => ({
     ...item,
-    titleKey: (item as { title_key?: string | null }).title_key ?? undefined,
+    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
+    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
   }))
-  return NextResponse.json({ services })
+  return NextResponse.json({ banners })
 }

@@ -4,8 +4,22 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { AdminAuthBar } from "@/components/admin/admin-auth-bar"
 import { AdminContentManager } from "@/components/admin/admin-content-manager"
-import { defaultDestinations, defaultServices, type DestinationContent, type ServiceContent } from "@/lib/content"
+import { AdminUserManager } from "@/components/admin/admin-user-manager"
+import { AdminAuditLog } from "@/components/admin/admin-audit-log"
+import {
+  defaultBanners,
+  defaultCustomSections,
+  defaultDestinations,
+  defaultServices,
+  type BannerContent,
+  type CustomSectionContent,
+  type DestinationContent,
+  type ServiceContent,
+} from "@/lib/content"
+import { getAdminContext } from "@/lib/admin-auth"
+import { hasPermission } from "@/lib/rbac"
 
 type ConciergeRequest = {
   id: string
@@ -29,6 +43,22 @@ const formatTimestamp = (value: string) => {
 }
 
 export default async function AdminPage() {
+  const context = await getAdminContext()
+  if (!context) {
+    return (
+      <main className="min-h-screen bg-background">
+        <section className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-serif">Admin Dashboard</CardTitle>
+              <CardDescription>Sign in to access the admin console.</CardDescription>
+            </CardHeader>
+          </Card>
+        </section>
+      </main>
+    )
+  }
+
   const supabase = getSupabaseAdminClient()
 
   if (!supabase) {
@@ -58,9 +88,11 @@ export default async function AdminPage() {
     .order("submitted_at", { ascending: false })
     .limit(200)
 
-  const [servicesResponse, destinationsResponse] = await Promise.all([
+  const [servicesResponse, destinationsResponse, bannersResponse, sectionsResponse] = await Promise.all([
     supabase.from("content_services").select("*").order("position", { ascending: true }),
     supabase.from("content_destinations").select("*").order("position", { ascending: true }),
+    supabase.from("content_banners").select("*").order("position", { ascending: true }),
+    supabase.from("content_sections").select("*").order("position", { ascending: true }),
   ])
 
   const servicesData = servicesResponse.data?.map((item) => ({
@@ -77,6 +109,23 @@ export default async function AdminPage() {
     destinationsResponse.error || !destinationsData?.length
       ? defaultDestinations
       : (destinationsData as DestinationContent[])
+  const bannersData = bannersResponse.data?.map((item) => ({
+    ...item,
+    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
+    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
+  }))
+  const banners =
+    bannersResponse.error || !bannersData?.length ? defaultBanners : (bannersData as BannerContent[])
+  const sectionsData = sectionsResponse.data?.map((item) => ({
+    ...item,
+    imageUrl: (item as { image_url?: string | null }).image_url ?? undefined,
+    ctaLabel: (item as { cta_label?: string | null }).cta_label ?? undefined,
+    ctaUrl: (item as { cta_url?: string | null }).cta_url ?? undefined,
+  }))
+  const sections =
+    sectionsResponse.error || !sectionsData?.length
+      ? defaultCustomSections
+      : (sectionsData as CustomSectionContent[])
 
   if (error) {
     return (
@@ -97,6 +146,10 @@ export default async function AdminPage() {
   }
 
   const requests = (data ?? []) as ConciergeRequest[]
+  const canReadRequests = hasPermission(context.role, "requests:read")
+  const canEditContent = hasPermission(context.role, "content:write")
+  const canManageUsers = hasPermission(context.role, "users:write")
+  const canReadAudit = hasPermission(context.role, "audit:read")
 
   return (
     <main className="min-h-screen bg-background">
@@ -108,65 +161,86 @@ export default async function AdminPage() {
           </p>
         </div>
 
-        {requests.length === 0 ? (
-          <Empty className="border-dashed bg-card">
-            <EmptyHeader>
-              <EmptyTitle>No requests yet</EmptyTitle>
-              <EmptyDescription>Concierge requests will appear here once submitted.</EmptyDescription>
-            </EmptyHeader>
-          </Empty>
+        <AdminAuthBar email={context.email} />
+
+        {canReadRequests ? (
+          requests.length === 0 ? (
+            <Empty className="border-dashed bg-card">
+              <EmptyHeader>
+                <EmptyTitle>No requests yet</EmptyTitle>
+                <EmptyDescription>Concierge requests will appear here once submitted.</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-serif">Concierge Requests</CardTitle>
+                <CardDescription>Showing the most recent {requests.length} submissions.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Guest</TableHead>
+                      <TableHead>Service</TableHead>
+                      <TableHead>Language</TableHead>
+                      <TableHead>Submitted</TableHead>
+                      <TableHead>Contact</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {requests.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell>
+                          <div className="flex flex-col gap-1">
+                            <span className="font-medium text-foreground">{request.name}</span>
+                            <span className="text-xs text-muted-foreground">{request.nationality ?? "—"}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">{request.service_interest}</Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {request.preferred_language ?? "—"}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {formatTimestamp(request.submitted_at)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1 text-sm">
+                            <a className="text-primary underline-offset-4 hover:underline" href={`mailto:${request.email}`}>
+                              {request.email}
+                            </a>
+                            <span className="text-xs text-muted-foreground line-clamp-2">{request.message}</span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )
         ) : (
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-serif">Concierge Requests</CardTitle>
-              <CardDescription>Showing the most recent {requests.length} submissions.</CardDescription>
+              <CardDescription>You do not have permission to view concierge requests.</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Guest</TableHead>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Language</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead>Contact</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {requests.map((request) => (
-                    <TableRow key={request.id}>
-                      <TableCell>
-                        <div className="flex flex-col gap-1">
-                          <span className="font-medium text-foreground">{request.name}</span>
-                          <span className="text-xs text-muted-foreground">{request.nationality ?? "—"}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{request.service_interest}</Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {request.preferred_language ?? "—"}
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {formatTimestamp(request.submitted_at)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col gap-1 text-sm">
-                          <a className="text-primary underline-offset-4 hover:underline" href={`mailto:${request.email}`}>
-                            {request.email}
-                          </a>
-                          <span className="text-xs text-muted-foreground line-clamp-2">{request.message}</span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
           </Card>
         )}
 
-        <AdminContentManager initialServices={services} initialDestinations={destinations} />
+        <AdminContentManager
+          initialServices={services}
+          initialDestinations={destinations}
+          initialBanners={banners}
+          initialSections={sections}
+          canEdit={canEditContent}
+        />
+
+        <AdminUserManager canManage={canManageUsers} />
+
+        <AdminAuditLog canRead={canReadAudit} />
       </section>
     </main>
   )

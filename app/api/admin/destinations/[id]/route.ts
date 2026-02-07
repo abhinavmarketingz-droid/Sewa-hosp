@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
+import { requirePermission } from "@/lib/admin-auth"
+import { logAudit } from "@/lib/audit"
 
 const destinationSchema = z.object({
   slug: z.string().trim().min(2).max(120),
@@ -14,6 +16,10 @@ const destinationSchema = z.object({
 })
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
+  const guard = await requirePermission("content:write")
+  if (!guard.ok) {
+    return NextResponse.json({ error: guard.error }, { status: guard.error === "Forbidden" ? 403 : 401 })
+  }
   const supabase = getSupabaseAdminClient()
   if (!supabase) {
     return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
@@ -36,6 +42,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  await logAudit({
+    actorId: guard.context.userId,
+    actorEmail: guard.context.email,
+    action: "content.update",
+    resource: "content_destinations",
+    metadata: { id: params.id },
+  })
+
   const { data } = await supabase.from("content_destinations").select("*").order("position", { ascending: true })
   const destinations = (data ?? []).map((item) => ({
     ...item,
@@ -45,6 +59,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+  const guard = await requirePermission("content:write")
+  if (!guard.ok) {
+    return NextResponse.json({ error: guard.error }, { status: guard.error === "Forbidden" ? 403 : 401 })
+  }
   const supabase = getSupabaseAdminClient()
   if (!supabase) {
     return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
@@ -54,6 +72,14 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  await logAudit({
+    actorId: guard.context.userId,
+    actorEmail: guard.context.email,
+    action: "content.delete",
+    resource: "content_destinations",
+    metadata: { id: params.id },
+  })
 
   const { data } = await supabase.from("content_destinations").select("*").order("position", { ascending: true })
   const destinations = (data ?? []).map((item) => ({

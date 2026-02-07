@@ -1,91 +1,57 @@
 import { NextResponse, type NextRequest } from "next/server"
+import { createServerClient } from "@supabase/ssr"
+import { getSupabaseUrl } from "@/lib/supabase-server"
 
-const isAdminConfigured = () =>
-  Boolean(process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD)
+const resolveAnonKey = () =>
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
-const parseBasicAuth = (authHeader: string | null) => {
-  if (!authHeader?.startsWith("Basic ")) {
-    return null
-  }
+const isAuthConfigured = () => Boolean(getSupabaseUrl() && resolveAnonKey())
 
-  const encoded = authHeader.slice(6)
-
-  try {
-    const decoded = atob(encoded)
-    const separatorIndex = decoded.indexOf(":")
-    if (separatorIndex === -1) {
-      return null
-    }
-
-    return {
-      username: decoded.slice(0, separatorIndex),
-      password: decoded.slice(separatorIndex + 1),
-    }
-  } catch {
-    return null
-  }
-}
-
-const constantTimeEqual = (left: string, right: string) => {
-  const leftLength = left.length
-  const rightLength = right.length
-  const maxLength = Math.max(leftLength, rightLength)
-  let result = 0
-
-  for (let index = 0; index < maxLength; index += 1) {
-    const leftChar = index < leftLength ? left.charCodeAt(index) : 0
-    const rightChar = index < rightLength ? right.charCodeAt(index) : 0
-    result |= leftChar ^ rightChar
-  }
-
-  return result === 0 && leftLength === rightLength
-}
-
-const isAuthorized = (request: NextRequest) => {
-  if (!isAdminConfigured()) {
-    return false
-  }
-
-  const credentials = parseBasicAuth(request.headers.get("authorization"))
-  if (!credentials) {
-    return false
-  }
-
-  const expectedUsername = process.env.ADMIN_USERNAME ?? ""
-  const expectedPassword = process.env.ADMIN_PASSWORD ?? ""
-
-  return (
-    constantTimeEqual(credentials.username, expectedUsername) &&
-    constantTimeEqual(credentials.password, expectedPassword)
-  )
-}
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isApi = path.startsWith("/api/admin")
+  const isLogin = path.startsWith("/admin/login")
 
-  if (!isAdminConfigured()) {
-    if (isApi) {
-      return NextResponse.json({ error: "Admin access is not configured" }, { status: 503 })
-    }
-
-    return new NextResponse("Admin access is not configured.", { status: 503 })
+  if (isLogin) {
+    return NextResponse.next()
   }
 
-  if (isAuthorized(request)) {
-    return NextResponse.next()
+  if (!isAuthConfigured()) {
+    if (isApi) {
+      return NextResponse.json({ error: "Auth is not configured" }, { status: 503 })
+    }
+
+    return NextResponse.redirect(new URL("/admin/login", request.url))
+  }
+
+  const response = NextResponse.next()
+  const supabase = createServerClient(getSupabaseUrl() as string, resolveAnonKey() as string, {
+    cookies: {
+      get(name) {
+        return request.cookies.get(name)?.value
+      },
+      set(name, value, options) {
+        response.cookies.set({ name, value, ...options })
+      },
+      remove(name, options) {
+        response.cookies.set({ name, value: "", ...options })
+      },
+    },
+  })
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user) {
+    return response
   }
 
   if (isApi) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  return new NextResponse("Authentication required.", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="SEWA Admin"',
-    },
-  })
+  return NextResponse.redirect(new URL("/admin/login", request.url))
 }
 
 export const config = {

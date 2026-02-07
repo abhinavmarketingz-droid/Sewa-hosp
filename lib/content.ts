@@ -18,6 +18,28 @@ export type DestinationContent = {
   imageUrl?: string
 }
 
+export type BannerContent = {
+  id: string
+  slug: string
+  message: string
+  ctaLabel?: string
+  ctaUrl?: string
+  variant?: "primary" | "secondary" | "neutral"
+  active?: boolean
+}
+
+export type CustomSectionContent = {
+  id: string
+  slug: string
+  title: string
+  body: string
+  imageUrl?: string
+  ctaLabel?: string
+  ctaUrl?: string
+  position?: number
+  active?: boolean
+}
+
 export const defaultServices: ServiceContent[] = [
   {
     id: "service-travel",
@@ -196,5 +218,31 @@ export const defaultDestinations: DestinationContent[] = [
     services: ["Backwater cruises", "Temple tours", "Beach resorts", "Spice route", "Ayurveda"],
     highlights: ["Backwater houseboats", "Ancient temple tours", "Spice plantation visits", "Traditional cuisine"],
     imageUrl: "/--dest-image-.jpg",
+  },
+]
+
+export const defaultBanners: BannerContent[] = [
+  {
+    id: "banner-founders",
+    slug: "founders-message",
+    message: "Now accepting bespoke concierge memberships for 2026 — limited availability.",
+    ctaLabel: "Request Membership",
+    ctaUrl: "/contact",
+    variant: "primary",
+    active: true,
+  },
+]
+
+export const defaultCustomSections: CustomSectionContent[] = [
+  {
+    id: "section-membership",
+    slug: "membership",
+    title: "Membership Experiences",
+    body: "Access private tastings, curated wellness retreats, and invite-only cultural immersions through our membership program.",
+    ctaLabel: "Explore Membership",
+    ctaUrl: "/contact",
+    imageUrl: "/--dest-image-.jpg",
+    position: 0,
+    active: true,
   },
 ]
