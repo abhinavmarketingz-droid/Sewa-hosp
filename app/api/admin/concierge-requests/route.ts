@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
+import { requirePermission } from "@/lib/admin-auth"
 
 const DEFAULT_LIMIT = 50
 const MAX_LIMIT = 200
 
 export async function GET(request: Request) {
+  const guard = await requirePermission("requests:read")
+  if (!guard.ok) {
+    return NextResponse.json({ error: guard.error }, { status: guard.error === "Forbidden" ? 403 : 401 })
+  }
   const supabase = getSupabaseAdminClient()
 
   if (!supabase) {
