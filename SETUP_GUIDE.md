@@ -378,7 +378,7 @@ create policy "Admins can view concierge requests"
 
 create policy "Admins can insert concierge requests"
   on concierge_requests for insert
-  with check (true);
+  with check (exists (select 1 from profiles p where p.id = auth.uid() and p.role in ('admin','editor')));
 
 create policy "Admins can view audit logs"
   on audit_logs for select

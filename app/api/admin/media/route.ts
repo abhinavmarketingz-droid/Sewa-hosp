@@ -30,6 +30,58 @@ const resolveExtension = (value: string) => {
   return extension?.toLowerCase() ?? ""
 }
 
+const matchMagicBytes = (bytes: Uint8Array, signature: number[]) =>
+  signature.every((value, index) => bytes[index] === value)
+
+const detectFileType = (bytes: Uint8Array) => {
+  if (bytes.length < 12) {
+    return "unknown"
+  }
+  if (matchMagicBytes(bytes, [0x89, 0x50, 0x4e, 0x47])) {
+    return "image/png"
+  }
+  if (matchMagicBytes(bytes, [0xff, 0xd8, 0xff])) {
+    return "image/jpeg"
+  }
+  if (
+    matchMagicBytes(bytes, [0x47, 0x49, 0x46, 0x38, 0x37, 0x61]) ||
+    matchMagicBytes(bytes, [0x47, 0x49, 0x46, 0x38, 0x39, 0x61])
+  ) {
+    return "image/gif"
+  }
+  if (matchMagicBytes(bytes, [0x25, 0x50, 0x44, 0x46])) {
+    return "application/pdf"
+  }
+  if (
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return "image/webp"
+  }
+  if (
+    bytes[0] === 0x00 &&
+    bytes[1] === 0x00 &&
+    bytes[2] === 0x00 &&
+    bytes[3] === 0x18 &&
+    bytes[4] === 0x66 &&
+    bytes[5] === 0x74 &&
+    bytes[6] === 0x79 &&
+    bytes[7] === 0x70
+  ) {
+    return "video/mp4"
+  }
+  if (matchMagicBytes(bytes, [0x1a, 0x45, 0xdf, 0xa3])) {
+    return "video/webm"
+  }
+  return "unknown"
+}
+
 const buildPublicUrl = (supabaseUrl: string, bucket: string, path: string) =>
   `${supabaseUrl}/storage/v1/object/public/${bucket}/${encodeURIComponent(path)}`
 
@@ -95,6 +147,12 @@ export async function POST(request: Request) {
 
   if (!file.type || !allowedMimeTypes.has(file.type)) {
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 })
+  }
+
+  const buffer = new Uint8Array(await file.arrayBuffer())
+  const detectedType = detectFileType(buffer)
+  if (!allowedMimeTypes.has(detectedType)) {
+    return NextResponse.json({ error: "Unsupported file content" }, { status: 400 })
   }
 
   const maxBytes = resolveMaxUploadBytes()
