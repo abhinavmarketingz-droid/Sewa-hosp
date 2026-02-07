@@ -52,7 +52,7 @@ This file binds all context documents into **actionable tasks**. Each task refer
   - Stripe/Razorpay starter modules
   - Entitlement-based pricing tiers
 
-### 7) Performance & Lighthouse 99+
+### 7) Performance & Lighthouse 99+ ✅
 - **Goal**: Hit Lighthouse 99+ consistently.
 - **Context**: `planning/context-operations.md` (Performance Targets)
 - **Deliverables**:
