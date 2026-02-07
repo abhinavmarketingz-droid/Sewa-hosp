@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { mapDbDestinationToContent } from "@/lib/content"
@@ -16,7 +16,11 @@ const destinationSchema = z.object({
   position: z.number().int().min(0).max(999).nullable().optional(),
 })
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
   const guard = await requirePermission("content:write")
   if (!guard.ok) {
     return NextResponse.json({ error: guard.error }, { status: guard.error === "Forbidden" ? 403 : 401 })
@@ -38,7 +42,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     position: parsed.data.position ?? null,
   }
 
-  const { error } = await supabase.from("content_destinations").update(updatePayload).eq("id", params.id)
+  const { error } = await supabase.from("content_destinations").update(updatePayload).eq("id", id)
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
@@ -48,7 +52,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     actorEmail: guard.context.email,
     action: "content.update",
     resource: "content_destinations",
-    metadata: { id: params.id },
+    metadata: { id },
   })
 
   const { data } = await supabase.from("content_destinations").select("*").order("position", { ascending: true })
@@ -56,7 +60,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   return NextResponse.json({ destinations })
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const guard = await requirePermission("content:write")
   if (!guard.ok) {
     return NextResponse.json({ error: guard.error }, { status: guard.error === "Forbidden" ? 403 : 401 })
@@ -66,7 +71,7 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
     return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
   }
 
-  const { error } = await supabase.from("content_destinations").delete().eq("id", params.id)
+  const { error } = await supabase.from("content_destinations").delete().eq("id", id)
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
@@ -76,7 +81,7 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
     actorEmail: guard.context.email,
     action: "content.delete",
     resource: "content_destinations",
-    metadata: { id: params.id },
+    metadata: { id },
   })
 
   const { data } = await supabase.from("content_destinations").select("*").order("position", { ascending: true })

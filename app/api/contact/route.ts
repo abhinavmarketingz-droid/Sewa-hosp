@@ -3,8 +3,6 @@ import { Resend } from "resend"
 import { z } from "zod"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name is required").max(120, "Name is too long"),
   email: z.string().trim().email("Invalid email format").max(254, "Email is too long"),
@@ -46,6 +44,14 @@ const escapeHtml = (value: string) =>
 
 async function sendEmail(data: ContactFormData) {
   try {
+    if (!process.env.RESEND_API_KEY) {
+      return {
+        success: false,
+        message: "Email service is not configured",
+      }
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const safeName = escapeHtml(data.name)
     const safeEmail = escapeHtml(data.email)
     const safeNationality = escapeHtml(data.nationality || "Not specified")

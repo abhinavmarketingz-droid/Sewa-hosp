@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import type { PostgrestFilterBuilder } from "@supabase/supabase-js"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { requirePermission } from "@/lib/admin-auth"
 
@@ -17,8 +16,8 @@ const resolveBackupLimit = (value: string | null) => {
   return Math.min(Math.floor(parsed), max)
 }
 
-const fetchLimited = async (query: PostgrestFilterBuilder<any, any, any, unknown>, limit: number) => {
-  const result = await query.select("*", { count: "exact" }).limit(limit)
+const fetchLimited = async (query: any, limit: number) => {
+  const result = await query.limit(limit)
   const count = result.count ?? 0
   return {
     data: result.data ?? [],
@@ -43,12 +42,36 @@ export async function GET(request: Request) {
   const limit = resolveBackupLimit(url.searchParams.get("limit"))
 
   const [services, destinations, banners, sections, requests, auditLogs] = await Promise.all([
-    fetchLimited(supabase.from("content_services").order("position", { ascending: true }), limit),
-    fetchLimited(supabase.from("content_destinations").order("position", { ascending: true }), limit),
-    fetchLimited(supabase.from("content_banners").order("position", { ascending: true }), limit),
-    fetchLimited(supabase.from("content_sections").order("position", { ascending: true }), limit),
-    fetchLimited(supabase.from("concierge_requests").order("submitted_at", { ascending: false }), limit),
-    fetchLimited(supabase.from("audit_logs").order("created_at", { ascending: false }), limit),
+    fetchLimited(
+      supabase.from("content_services").select("*", { count: "exact" }).order("position", { ascending: true }),
+      limit
+    ),
+    fetchLimited(
+      supabase
+        .from("content_destinations")
+        .select("*", { count: "exact" })
+        .order("position", { ascending: true }),
+      limit
+    ),
+    fetchLimited(
+      supabase.from("content_banners").select("*", { count: "exact" }).order("position", { ascending: true }),
+      limit
+    ),
+    fetchLimited(
+      supabase.from("content_sections").select("*", { count: "exact" }).order("position", { ascending: true }),
+      limit
+    ),
+    fetchLimited(
+      supabase
+        .from("concierge_requests")
+        .select("*", { count: "exact" })
+        .order("submitted_at", { ascending: false }),
+      limit
+    ),
+    fetchLimited(
+      supabase.from("audit_logs").select("*", { count: "exact" }).order("created_at", { ascending: false }),
+      limit
+    ),
   ])
 
   const bucket = resolveMediaBucket()

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getSupabaseAdminClient } from "@/lib/supabase-server"
 import { requirePermission } from "@/lib/admin-auth"
@@ -8,7 +8,11 @@ const roleSchema = z.object({
   role: z.enum(["admin", "editor", "viewer"]),
 })
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
   const guard = await requirePermission("users:write")
   if (!guard.ok) {
     return NextResponse.json({ error: guard.error }, { status: guard.error === "Forbidden" ? 403 : 401 })
@@ -25,7 +29,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: parsed.error.errors[0]?.message ?? "Invalid request" }, { status: 400 })
   }
 
-  const { error } = await supabase.from("profiles").update({ role: parsed.data.role }).eq("id", params.id)
+  const { error } = await supabase.from("profiles").update({ role: parsed.data.role }).eq("id", id)
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
@@ -35,7 +39,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     actorEmail: guard.context.email,
     action: "user.role.update",
     resource: "profiles",
-    metadata: { id: params.id, role: parsed.data.role },
+    metadata: { id, role: parsed.data.role },
   })
 
   const { data } = await supabase.from("profiles").select("id,email,full_name,role,created_at").order("email")

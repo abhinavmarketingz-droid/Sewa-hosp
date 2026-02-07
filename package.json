@@ -5,10 +5,14 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "lhci:ci": "pnpm build && lhci autorun",
     "lint": "eslint .",
     "start": "next start"
   },
   "dependencies": {
+    "@fontsource/geist": "^5.2.8",
+    "@fontsource/geist-mono": "^5.2.7",
+    "@fontsource/playfair-display": "^5.2.8",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
@@ -66,6 +70,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.14.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
