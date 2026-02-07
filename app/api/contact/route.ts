@@ -25,6 +25,17 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>
 
 interface ConciergeRequestRecord {
+interface ContactFormData {
+  name: string
+  email: string
+  nationality: string | null
+  service_interest: string
+  preferred_language: string | null
+  message: string
+  website?: string
+}
+
+interface ConciergeRequestRecord {
   name: string
   email: string
   nationality: string | null
