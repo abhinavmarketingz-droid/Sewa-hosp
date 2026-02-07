@@ -108,6 +108,7 @@ Fully implemented i18n with 10 languages:
 - Contact/Concierge request form
 - Client-side and server-side validation
 - Email service ready (Resend, SendGrid, Nodemailer)
+- Supabase-backed request storage for admin dashboard
 - Optional database integration (Supabase, Neon)
 
 ## Pages
@@ -120,6 +121,9 @@ Fully implemented i18n with 10 languages:
 5. **Destinations** (`/destinations`) - Curated Indian destinations
 6. **Partners** (`/partners`) - Hotel, transport, legal partners
 7. **Contact** (`/contact`) - Concierge form & contact info
+
+### Admin
+8. **Admin Dashboard** (`/admin`) - Basic Auth protected concierge requests
 
 ## Installation & Setup
 
@@ -317,7 +321,7 @@ await sql`INSERT INTO concierge_requests (name, email) VALUES ($1, $2)`;
 - Booking system for services
 - Payment integration (Stripe)
 - Blog/News section
-- Admin dashboard for content management
+- Extended admin dashboard for content management
 - Advanced analytics
 - Video testimonials
 - Live chat support widget
