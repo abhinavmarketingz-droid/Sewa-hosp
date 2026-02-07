@@ -14,6 +14,7 @@ import { AdminExtensions } from "@/components/admin/admin-extensions"
 import { AdminLicenseStatus } from "@/components/admin/admin-license-status"
 import { AdminThemeManager } from "@/components/admin/admin-theme-manager"
 import { AdminPageBuilder } from "@/components/admin/admin-page-builder"
+import { AdminPaymentGateways } from "@/components/admin/admin-payment-gateways"
 import {
   defaultBanners,
   defaultCustomSections,
@@ -245,6 +246,8 @@ export default async function AdminPage() {
         {hasPermission(context.role, "theme:read") ? <AdminThemeManager /> : null}
 
         {hasPermission(context.role, "content:write") ? <AdminPageBuilder /> : null}
+
+        {hasPermission(context.role, "payments:read") ? <AdminPaymentGateways /> : null}
 
         <AdminUserManager canManage={canManageUsers} />
 

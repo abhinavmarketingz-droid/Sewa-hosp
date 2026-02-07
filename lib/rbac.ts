@@ -13,6 +13,7 @@ export type Permission =
   | "license:write"
   | "theme:read"
   | "theme:write"
+  | "payments:read"
 
 const rolePermissions: Record<Role, Permission[]> = {
   admin: [
@@ -28,6 +29,7 @@ const rolePermissions: Record<Role, Permission[]> = {
     "license:write",
     "theme:read",
     "theme:write",
+    "payments:read",
   ],
   editor: ["content:read", "content:write", "requests:read"],
   viewer: ["content:read", "requests:read"],

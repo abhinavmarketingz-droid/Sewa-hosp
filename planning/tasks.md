@@ -44,7 +44,7 @@ This file binds all context documents into **actionable tasks**. Each task refer
   - Sitemap + schema support
   - Multilingual content support
 
-### 6) Payments & Monetization
+### 6) Payments & Monetization ✅
 - **Goal**: Pluggable payment gateways.
 - **Context**: `planning/context-product.md` (Commerce)
 - **Deliverables**:
