@@ -11,6 +11,7 @@ import { AdminAuditLog } from "@/components/admin/admin-audit-log"
 import { AdminBackups } from "@/components/admin/admin-backups"
 import { AdminMediaManager } from "@/components/admin/admin-media-manager"
 import { AdminExtensions } from "@/components/admin/admin-extensions"
+import { AdminLicenseStatus } from "@/components/admin/admin-license-status"
 import {
   defaultBanners,
   defaultCustomSections,
@@ -236,6 +237,8 @@ export default async function AdminPage() {
         </div>
 
         {hasPermission(context.role, "extensions:read") ? <AdminExtensions /> : null}
+
+        {hasPermission(context.role, "license:read") ? <AdminLicenseStatus /> : null}
 
         <AdminUserManager canManage={canManageUsers} />
 
