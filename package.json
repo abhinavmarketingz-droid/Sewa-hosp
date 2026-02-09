@@ -5,7 +5,6 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lhci:ci": "pnpm build && lhci autorun",
     "lint": "eslint .",
     "start": "next start"
   },
@@ -70,7 +69,6 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.14.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
