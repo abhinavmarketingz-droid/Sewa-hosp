@@ -23,7 +23,7 @@ export const logAudit = async ({ actorId, actorEmail, action, resource, metadata
     return
   }
 
-  const headerStore = headers()
+  const headerStore = await headers()
   const ipAddress = headerStore.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null
   const userAgent = headerStore.get("user-agent")
 

@@ -17,7 +17,7 @@ const resolveRole = (value: string | null): Role => {
 }
 
 export const getAdminContext = async (): Promise<AdminContext | null> => {
-  const supabase = createSupabaseServerClient()
+  const supabase = await createSupabaseServerClient()
   if (!supabase) {
     return null
   }

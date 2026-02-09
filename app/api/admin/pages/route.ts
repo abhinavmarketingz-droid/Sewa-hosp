@@ -55,7 +55,7 @@ export async function POST(request: Request) {
   await logAudit({
     actorId: guard.context.userId,
     actorEmail: guard.context.email,
-    action: "page.create",
+    action: "content.create",
     resource: "pages",
     metadata: { slug: parsed.data.slug },
   })

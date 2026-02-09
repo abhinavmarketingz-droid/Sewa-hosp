@@ -65,7 +65,7 @@ export async function PUT(request: Request) {
   await logAudit({
     actorId: guard.context.userId,
     actorEmail: guard.context.email,
-    action: "theme.update",
+    action: "content.update",
     resource: "theme_configs",
     metadata: { tenantId: parsed.data.tenantId },
   })
